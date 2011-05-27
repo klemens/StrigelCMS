@@ -1,8 +1,0 @@
-StrigelCMS is a flexible, but still simple and easy to use Content-Management-System.
-
-It includes TinyMCE for easy creation of sites by people who don't have any HTML or CSS knownledge.
-If you're familiar with PHP you can write your own modules to include your scripts and applications.
-
-StrigelCMS features an event-based plugin system which allows you to customise the system to your needs.
-
-Templates allow you to apply your own design to the website.
