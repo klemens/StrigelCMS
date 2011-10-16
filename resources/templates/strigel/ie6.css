@@ -1,0 +1,12 @@
+div#mainframe {
+    width: 950px;
+}
+
+#navigation li ul {
+    margin-left: 20px;
+    display: none;
+    display: block;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+}

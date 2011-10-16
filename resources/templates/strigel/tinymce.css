@@ -1,0 +1,110 @@
+body
+{
+    font-family: arial,verdana,sans-serif;
+    font-size: 100.01%;
+}
+img
+{
+    border: none;
+}
+option
+{
+    padding-left: 0.4em;
+}
+select
+{
+    padding: 1px;
+}
+select,
+input,
+textarea
+{
+    font-size: 99%;
+}
+ul, ol, dl
+{
+    margin: 0 0 1em 1em;
+}
+li
+{
+    margin-left: 0.8em;
+    line-height: 1.2em;
+}
+dt
+{
+    font-weight: bold;
+}
+dd
+{
+    margin: 0 0 1em 0.8em;
+}
+blockquote
+{
+    margin: 0 0 1em 0.8em;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after
+{
+    content: "";
+}
+p
+{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+table {
+    border-collapse:separate;
+    border-spacing:5px;
+    width: 100%;
+}
+th
+{
+    text-align: left;
+}
+h1
+{
+    color: #048;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+h2
+{
+    color: #048;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+h3
+{
+    color: #048;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+h4
+{
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+h5
+{
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+h6
+{
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+a:link,
+a:visited,
+a:active,
+a:focus
+{
+    text-decoration: none;
+    color: #048;
+}
+a:hover
+{
+    text-decoration: underline;
+}

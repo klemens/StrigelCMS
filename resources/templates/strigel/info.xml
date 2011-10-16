@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+<name>Strigel Template</name>
+<version>0.2</version>
+<forversion>0.1</forversion>
+<author>Klemens Schölhorn</author>
+<screenshot>screenshot.jpg</screenshot>
+<notes>Dieses Template zeigt im Header mehrere Außenansichten des Bernhard Strigel Gymnasiums in Memmingen. Es ist zur Zeit das Standard Template für das SCMS.</notes>
+<licence url="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</licence>
+</template>

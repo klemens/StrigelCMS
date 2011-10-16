@@ -1,0 +1,122 @@
+form.ffphp fieldset {
+    margin: 0;
+    padding: 10px 5px;
+    border: none;
+}
+form.ffphp legend {
+    font-weight: bold;
+}
+form.ffphp label {
+    display: -moz-inline-box;
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 0.5em;
+}
+form.ffphp fieldset ol {
+    margin: 0;
+    padding: 0;
+}
+form.ffphp fieldset li {
+    list-style: none;
+    padding: 0.45em 0 0.45em 0;
+    margin: 0;
+}
+form.ffphp fieldset fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+form.ffphp fieldset fieldset legend {
+    padding: 0 0 0 0.45em;
+    font-weight: normal;
+}
+form.ffphp fieldset fieldset label {
+    display: block;
+    width: auto;
+}
+
+form.ffphp div.item {
+    width: 60%;
+    width: -moz-calc(65% - 1.5em - 5px);
+    display: -moz-inline-box;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+form.ffphp div.item p.desc {
+    padding: 0;
+    margin: 0;
+    font-size: 80%;
+    padding: .5em 0 0 1em;
+}
+form.ffphp input,
+form.ffphp textarea {
+    width: 100%;
+}
+form.ffphp fieldset fieldset label input {
+    width: auto;
+}
+
+form.ffphp em {
+    font-weight: bold;
+    font-style: normal;
+    color: red;
+}
+form.ffphp strong {
+    font-weight: bold;
+    font-size: 0.7em;
+    color: red;
+    vertical-align: middle;
+}
+form.ffphp label {
+    width: 35%;
+}
+form.ffphp fieldset fieldset label {
+    margin-left: 35%;
+}
+form.ffphp fieldset fieldset p.desc {
+    padding-left: 1.6em;
+    font-size: 80%;
+    margin: .5em 0 0 35.5%;
+}
+form.ffphp button {
+    margin-left: 36%;
+    margin-left: -moz-calc(35% + 0.6em);
+}
+form.ffphp fieldset.ffphp-button li {
+    padding: 0 0 0 5px;
+}
+form.ffphp fieldset.ffphp-button p.desc {
+    margin: .5em 0 0 36%;
+    margin-left: -moz-calc(35% + 1.6em);
+    font-size: 80%;
+}
+
+form.ffphp li.ffphp-r1 {
+    background-color: none;
+}
+form.ffphp li.ffphp-r2 {
+    background-color: #F5F5F5;
+}
+form.ffphp input.ffphp-error,
+form.ffphp textarea.ffphp-error {
+    border: solid 2px red;
+}
+form.ffphp select.ffphp-error {
+    border: solid 2px red;
+}
+form.ffphp fieldset fieldset.ffphp-error label {
+    color: red;
+    font-weight: bold;
+}
+form.ffphp em.ffphp-error {
+    border: none;
+    color: red;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+form.ffphp span.toggle {
+    cursor: pointer;
+    font-size: 70%;
+    vertical-align: 10%;
+}
