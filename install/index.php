@@ -221,8 +221,11 @@ function deleteDir($folder) {
             unlink($folder.$entry);
         }
     }
-        
-    return rmdir(substr($folder, 0, -1));
+    
+    if(substr($folder, 0, -1) == '.')
+        return rmdir('../install');
+    else
+        return rmdir(substr($folder, 0, -1));
 }
 
 ?>
