@@ -222,7 +222,7 @@ function deleteDir($folder) {
         }
     }
         
-    return rmdir($folder);
+    return rmdir(substr($folder, 0, -1));
 }
 
 ?>
