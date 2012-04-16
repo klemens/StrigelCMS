@@ -44,10 +44,10 @@ class template
     
     public function __construct($file, $string = false)
     {
-        if(is_file($file) && $string === false) {
-            $this->setFile($file);
-        } else {
+        if($string OR !is_file($file)) {
             $this->content = $file;
+        } else  {
+            $this->setFile($file);
         }
     }
     
