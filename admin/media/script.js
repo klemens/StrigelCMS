@@ -66,8 +66,8 @@ window.onload = function() {
         }
     }
     
-    if(document.forms[0]) {
-        document.forms[0].onsubmit = function() {
+    if(document.forms[1]) {
+        document.forms[1].onsubmit = function() {
             if(document.getElementById('page_editor_set-1').checked) {
                 tinyMCE.execCommand('mceRemoveControl', false, 'page_html');
                 if(page_html_link_replace_do) {
