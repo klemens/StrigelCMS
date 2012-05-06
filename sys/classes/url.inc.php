@@ -59,8 +59,9 @@ class url
 
 		//absolute script-path for links
 		if(!$host) {
+            $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
             $path = dirname($_SERVER['SCRIPT_NAME']);
-            $host = 'http://'.$_SERVER['SERVER_NAME'].
+            $host = $scheme.'://'.$_SERVER['SERVER_NAME'].
                     (($path == '\\' OR $path == '/') ? '' : $path).'/';
 			$this->server = $host;
 		} else {
