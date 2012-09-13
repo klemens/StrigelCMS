@@ -44,19 +44,10 @@ switch($action) {
 
         echo '<table>'.LF;
         echo '<tr><th>Aufrufe</th><th>Seite</th>';
-        if(!isset($_GET['fast']))
-            echo '<th>Häufigster Referrer</th>';
         echo '</tr>'.LF;
 
         //If performance is too low, remove the subselect!
         $q = $DB->query("SELECT COUNT(id) AS `aufrufe`, `a`.`site`".
-                            (isset($_GET['fast']) ? "" :
-                             ", (SELECT `b`.`referer`
-                             FROM `".DB_PRE."sys_404` AS `b`
-                             WHERE `b`.`site` = `a`.`site`
-                             GROUP BY `b`.`referer`
-                             ORDER BY COUNT(`b`.`site`) DESC
-                             LIMIT 1) AS `most_often_referer`").
                          "FROM `".DB_PRE."sys_404` AS `a`
                          GROUP BY `a`.`site`
                          ORDER BY `aufrufe` DESC");
@@ -79,9 +70,6 @@ switch($action) {
             echo '<td><a href="'.make_link(1, 'action=detail',
                                               'site='.$row->site).
                  '">'.htmlspecialchars($row->site).'</a></td>';
-            if(!isset($_GET['fast']))
-                echo '<td>'.htmlspecialchars((empty($row->most_often_referer)
-                        ? 'kein Referrer' : $row->most_often_referer)).'</td>';
 
             echo '</tr>'.LF;
         }

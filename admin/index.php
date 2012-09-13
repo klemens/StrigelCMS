@@ -260,7 +260,7 @@ $defModules = array(
         '404'    => array(
             'name'          => '404-Fehler',
             'file'          => '404.mod.php',
-            'description'   => 'Aufgerufene, aber nicht gefundene Seiten und deren Referrer anzeigen.<br />Falls der Datenbankabruf zu lange dauert, fügen Sie <strong>&amp;fast</strong> an die Adresse an. Dies beschleunigt den Abruf, zeigt aber weniger Informationen an.',
+            'description'   => 'Aufgerufene, aber nicht gefundene Seiten und deren Referrer anzeigen.',
             'menuEntry'     => true
         ),
         'errors'    => array(
