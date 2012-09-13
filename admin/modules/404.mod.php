@@ -35,7 +35,8 @@ $action = empty($_GET['action']) ? 'overview' : $_GET['action'];
 
 switch($action) {
     case 'delete':
-        $DB->execute("DELETE FROM `".DB_PRE."sys_404`");
+        $DB->execute("DELETE FROM `".DB_PRE."sys_404`"
+                        . (!empty($_GET['site']) ? " WHERE `site` = '".$DB->escape($_GET['site'])."'" : ""));
     case 'overview':
         echo '<h2>Aufgaben</h2>'.LF;
         echo '<h3><a href="'.make_link(1, 'action=delete').'">Alle löschen</a></h3>'.LF;
@@ -93,7 +94,8 @@ switch($action) {
     case 'detail':
         echo '<h2>Aufgaben</h2>'.LF;
         echo '<h3><a href="'.make_link(1).'">Zurück</a></h3>'.LF;
-        echo '<h2>Die häufigsten Referrer</h2>'.LF;
+        echo '<h3><a href="'.make_link(1, 'action=delete', 'site='.$_GET['site']).'">Diesen Fehler löschen</a></h3>'.LF;
+        echo '<h2>Die häufigsten Referrer für "'.htmlspecialchars($_GET['site']).'"</h2>'.LF;
 
         $q = $DB->query("SELECT `referer`, COUNT(`id`) AS `aufrufe`
                          FROM `".DB_PRE."sys_404`
