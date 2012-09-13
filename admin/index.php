@@ -89,7 +89,9 @@ function make_link($use_old = 0) {
 
     foreach(func_get_args() AS $new_arg) {
         if(!strpos($new_arg, '=')) continue;
-        list($arg, $value) = explode('=', $new_arg);
+        $explodedarg = explode('=', $new_arg);
+        $arg = array_shift($explodedarg);
+        $value = implode('=', $explodedarg);
         $arg = trim($arg);
         if(!empty($arg)) $args[trim($arg)] = trim($value);
     }
