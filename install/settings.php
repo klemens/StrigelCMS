@@ -32,7 +32,7 @@ if(!defined('SCMS')) {
 //--
 
 //SCMS Version
-define('SCMS_VERSION', '1.0');
+define('SCMS_VERSION', '1.2');
 //--
 
 //MAIL
