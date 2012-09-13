@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `{dbPrefix}sys_user` (
 
 INSERT INTO `{dbPrefix}sys_content` (`id`, `title`, `link`, `content_type`, `showEditor`, `file`, `content`, `redirect`, `date`, `author`, `robot_visibility`, `description`, `keywords`, `css`, `js`, `header_image`, `files`, `lang`, `m_title`, `m_pid`, `m_sort`, `m_active`) VALUES
 (1, '404 - Seite nicht gefunden', '404', 'file', 0, '404.php', NULL, NULL, '2011-10-08 01:13:00', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, 'de-de', '404 - Seite nicht gefunden', 0, 30, 0),
-(2, 'Startseite', 'home', 'html', 1, NULL, '<h1>Willkommen beim StrigelCMS</h1><p>Herzlichen Glückwunsch. Die Installation des StrigelCMS wurde erfolgreich abgeschlossen.</p><p>Unter der URL <a href="{href:admin}">{href:admin}</a> finden Sie das Backend, wo Sie Ihre Website verwalten können.</p><p>Weitere Informationen und Hilfestellungen bei Problemen finden Sie unter <a href="http://klemen.schoelhorn.eu/scms">http://klemen.schoelhorn.eu/scms</a>.</p>', NULL, '2011-10-08 01:13:00', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, 'de-de', 'Home', 0, 8, 1);
+(2, 'Startseite', 'home', 'html', 1, NULL, '<h1>Willkommen beim StrigelCMS</h1><p>Herzlichen Glückwunsch. Die Installation des StrigelCMS wurde erfolgreich abgeschlossen.</p><p>Unter der URL <a href="{href:admin}">{href:admin}</a> finden Sie das Backend, wo Sie Ihre Website verwalten können.</p><p>Weitere Informationen und Hilfestellungen bei Problemen finden Sie unter <a href="http://klemens.schoelhorn.eu/scms">http://klemens.schoelhorn.eu/scms</a>.</p>', NULL, '2011-10-08 01:13:00', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, 'de-de', 'Home', 0, 8, 1);
 
 INSERT INTO `{dbPrefix}sys_rights` (`userID`, `right`, `value`) VALUES
 (1, 'admin_pages', '0'),
