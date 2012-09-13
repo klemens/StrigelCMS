@@ -288,7 +288,7 @@ $elements = array();
 $elements[] = array('title' => 'Standardbild', 'value' => '');
 foreach(scandir('../'.DIR_HEADER) AS $file) {
     $file_info = pathinfo($file);
-    $file_ext = $file_info['extension'];
+    $file_ext = isset($file_info['extension']) ? $file_info['extension'] : '';
     if(($file_ext === 'jpg') ||($file_ext === 'png') ||($file_ext === 'jpeg')) {
         if($edit_form_data['header_image'] === $file) {
             $elements[] = array('title' => $file, 'value' => $file, 'flag' => 'selected');
