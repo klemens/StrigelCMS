@@ -33,24 +33,24 @@ if(!defined('SCMS')) {
 
 class menu
 {
-    
+
     private $database;
     private $CONFIG;
     private $URL;
-    
+
     private $flat_menu = array();
     public $tree_menu = array();
     private $path = array();
-    
+
     private $activeList;
-    
+
     private $output_allowed = true;
-    
+
     private $ref_child_by_id = array();
     private $ref_data_by_id = array();
     private $ref_data_by_title = array();
     private $ref_data_by_href = array();
-    
+
     public function __construct($database, $CONFIG, $URL)
     {
         if($database) {
@@ -71,10 +71,10 @@ class menu
             //Cannot use output functions!
             $this->output_allowed = false;
         }
-        
+
         $this->_loadMenu();
     }
-    
+
     protected function _loadMenu()
     {
         //Protection from endless loop
@@ -84,17 +84,17 @@ class menu
                     `link` AS `href`, `m_sort` AS `sort`, `m_active` AS `active`
                     FROM `".DB_PRE."sys_content`
                     ORDER BY `pid` ASC, `sort` ASC, `m_title` ASC";
-        
+
         $q = $this->database->query($query);
         while(false !== ($row = $q->fetch(SQL_ASSOC_ARRAY)))
         {
             $this->flat_menu[] = $row;
         }
         $q = null;
-        
+
         //For all the nodes with pid = 0
         $this->ref_child_by_id['0'] = &$this->tree_menu;
-        
+
         //Transform flat menu into tree
         foreach($this->flat_menu AS &$flat_menu_row) {
             //Prepare the data to be inserted into final Array
@@ -136,23 +136,23 @@ class menu
             unset($tmp_ref2);
         }
     }
-    
+
     private function _reloadMenu()
     {
         //delete the menu..
         $this->flat_menu = array();
         $this->tree_menu = array();
         $this->path = array();
-    
+
         $this->ref_child_by_id = array();
         $this->ref_data_by_id = array();
         $this->ref_data_by_title = array();
         $this->ref_data_by_href = array();
-        
+
         //..and load it again
         $this->_loadMenu();
     }
-    
+
     public function getMenu($id = 0)
     {
         if(0 === $id) {
@@ -165,30 +165,30 @@ class menu
             }
         }
     }
-    
+
     private function getNextHigherActive($id)
     {
         if(!isset($this->ref_data_by_id[$id]))
             return false;
-        
+
         if($this->ref_data_by_id[$id]['active'] == 1)
             return $id;
-        
+
         while(1) {
             $id = $this->ref_data_by_id[$id]['pid'];
-            
+
             if($id == 0)
                 return 0;
-                
+
             if($this->ref_data_by_id[$id]['active'] == 1)
                 return $id;
         }
     }
-    
+
     public function setActive(array $active) {
         $this->activeList = array_map(create_function('$a', 'return (string)$a;'), $active);
     }
-    
+
     public function getPath($target = '', $separator = false, $string = '', $string_active = '', $full_path = false)
     {
         if(!$this->output_allowed) {
@@ -208,7 +208,7 @@ class menu
             else
                 return '';
         }
-        
+
         //Create the path from the element to the top through every level
         $path = array();
         $current_id = $target_id;
@@ -220,17 +220,17 @@ class menu
             //increase the level for the next run of the loop
             $current_id = $this->ref_data_by_id[$current_id]['pid'];
         }
-        
+
         //Make the highest level of the menu the highest level of path list
         $path = array_reverse($path);
-        
+
         //If the user has not given proper strings
         if(!$string) {
             $string = '<a href="%2$s">%1$s</a>';
-        }        
+        }
         if(!$string_active) {
             $string_active = '%1$s';
-        }        
+        }
         if($separator !== false) {
             //Create the path of words (just to see, if its right)
             $path_text = array();
@@ -251,7 +251,7 @@ class menu
             return $path;
         }
     }
-    
+
     public function getMenuHtml($method, $string = '', $target = '')
     {
         if(!$this->output_allowed) {
@@ -274,16 +274,16 @@ class menu
             return false;
         }
     }
-    
+
     private function _createTreeHtmlComplete(&$data, $string)
     {
         $html = '<ul>';
-        
+
         //Get all neighbours of current element
         foreach($data AS $data_row) {
-            
+
             $href = $this->URL->makeLink(explode('/', $data_row['href']));
-            
+
             $html .= '<li>'.LF.sprintf($string, $data_row['title'],
                                              $href,
                                              $data_row['id'],
@@ -295,23 +295,23 @@ class menu
              $html .= '</li>';
         }
         $html .= '</ul>';
-        
+
         return $html;
     }
-    
+
     private function _createTreeHtmlPath(&$data, $path, $string)
     {
         $lb = '-->';
         $le = '<!--'.LF;
         $html = '<ul>'.$le;
-        
+
         //Get all neighbours of current element
         foreach($data AS $data_row) {
             if($data_row['active'] == 0)
                 continue;
-            
+
             $href = $this->URL->makeLink($data_row['href']);
-            
+
             $destination = end($path);
             reset($path);
             if(!isset($this->activeList)) {
@@ -323,9 +323,9 @@ class menu
                 else
                     $html_open_tag = '<li>';
             }
-            
+
             $html_open_tag = $lb.$html_open_tag;
-                        
+
             $html .= $html_open_tag.sprintf($string, $data_row['title'],
                                                      $href,
                                                      $data_row['id'],
@@ -337,13 +337,13 @@ class menu
              $html .= '</li>'.$le;
         }
         $html .= $lb.'</ul>';
-        
+
         if($html == '<ul><!--'.LF.'--></ul>')
             return '';
         else
             return $html;
     }
-    
+
     public function getIdByHref($href)
     {
         if(isset($this->ref_data_by_href[$href])) {
@@ -352,7 +352,7 @@ class menu
             return false;
         }
     }
-    
+
     public function getHrefById($id)
     {
         if(isset($this->ref_data_by_id[$id])) {
@@ -361,7 +361,7 @@ class menu
             return false;
         }
     }
-    
+
     public function getTitleById($id)
     {
         if(isset($this->ref_data_by_id[$id])) {
@@ -370,7 +370,7 @@ class menu
             return false;
         }
     }
-    
+
     public function getRealTitleById($id)
     {
         if(isset($this->ref_data_by_id[$id])) {
@@ -379,7 +379,7 @@ class menu
             return false;
         }
     }
-    
+
     public function getPidById($id)
     {
         if(isset($this->ref_data_by_id[$id])) {
@@ -388,7 +388,7 @@ class menu
             return false;
         }
     }
-    
+
     public function hasChild($id) {
         if(isset($this->ref_data_by_id[$id])) {
             return !empty($this->ref_data_by_id[$id]['child']);
@@ -396,16 +396,16 @@ class menu
             return null;
         }
     }
-    
+
     public function isChildIf($child, $parent)
     {
         return $this->_isChildOf($child, $parent);
     }
-        
+
     protected function _isChildOf($child, $parent)
     {
         $success = false;
-        
+
         //if we're already on top, there are no parents
         if($child == 0) {
             return false;
@@ -419,14 +419,14 @@ class menu
         {
             return false;
         }
-        
+
         //begin walk from parent to child
         foreach($this->ref_child_by_id[$parent] AS $children) {
             //the child we were seaching for! there it is!
             if($child == $children['id']) {
                 return true;
             }
-            
+
             //walk trough children of child, ....
             $success = $this->_isChildOf($child, $children['id']);
             //if this walk was successful
@@ -434,10 +434,10 @@ class menu
                 break;
             }
         }
-        
+
         return $success;
     }
-    
+
     public function moveNode($node, $destination)
     {
         //destination not under childs of node? lets go...
@@ -447,16 +447,16 @@ class menu
         } else if ($node == $destination) {
             return false;
         }
-        
+
         $query = "UPDATE `".DB_PRE."sys_content`
                   SET `m_pid` = ".$this->database->escape($destination)."
                   WHERE `id` = ".$this->database->escape($node)."
                   LIMIT 1";
-        
+
         $success = $this->database->execute($query);
-        
+
         $this->_reloadMenu();
-        
+
         return $success;
     }
 }

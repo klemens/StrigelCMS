@@ -37,18 +37,18 @@ function logit($part, $error_text)
         logit("logit/no_part!", $part);
         die("logit: No part given! Call Admin: ".ADMIN_MAIL);
     }
-    
+
     $file = DIR_WORK.LOG_DIRECTORY.LOG_FILE;
     $error_text = preg_replace("#(\n|\r|\n\r)+#", " ↵ ", $error_text);
     $error_text = preg_replace("#( +)#", " ", $error_text);
-    
+
     if(!($file_handler = fopen($file, "ab")))
         die("ERROR: Could not open log file! Call Admin: ".ADMIN_MAIL);
-    
+
     if(!fwrite($file_handler, date("c | ").$part.": ".$error_text."\n"))
         die("ERROR: Could not write data into log file! Call Admin: ".ADMIN_MAIL);
-    
+
     fclose($file_handler);
-    
+
     return true;
 }

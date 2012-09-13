@@ -86,27 +86,27 @@ function make_link($use_old = 0) {
             $args['do'] = $_GET['do'];
         }
     }
-    
+
     foreach(func_get_args() AS $new_arg) {
         if(!strpos($new_arg, '=')) continue;
         list($arg, $value) = explode('=', $new_arg);
         $arg = trim($arg);
         if(!empty($arg)) $args[trim($arg)] = trim($value);
     }
-    
+
     $link = $_SERVER['PHP_SELF'];
-    
+
     $a_arg = array();
     foreach($args AS $arg => $value) {
         $arg = trim($arg);
         if(empty($arg)) continue;
         $a_arg[] = urlencode($arg).'='.urlencode($value);
     }
-    
+
     if(!empty($a_arg)) $link .= '?';
-    
+
     $link .= implode('&amp;', $a_arg);
-    
+
     return $link;
 }
 
@@ -340,26 +340,26 @@ if(!empty($_GET['do']) && isset($modules_flat[$_GET['do']])) {
 //Print overview if no module
 if($print_overview) {
     echo '<h2>Für Sie verfügbare Module</h2>'.LF;
-    
+
     if(empty($modules)) {
         if(!$USER->loggedIn())
             message_success(0, 'Sie haben keinen Zugriff auf das Backend! Bitte rechts oben einloggen!');
         else
             message_success(0, 'Zur Zeit haben Sie auf keine Backend Funktion Zugriff! Bitte an den Administrator wenden!');
     }
-    
+
     foreach($modules AS $group_name => $group) {
         if(empty($group)) continue;
-        
+
         echo '<h3>'.$group_name.'</h3>'.LF;
-        
+
         foreach($group AS $module_do => $module) {
             if(!$module['menuEntry']) continue;
-                    
+
             printf('<p><b><a href="%s">%s</a></b><br />'.LF,
                    make_link(0, 'do='.$module_do),
                    $module['name']);
-            
+
             printf('%s</p>', isset($module['description'])
                              ? $module['description']
                              : 'Keine Beschreibung vorhanden');
@@ -398,22 +398,22 @@ $menu .= '<ul>';
 $menu .= '<li id="navHome"><a href="'.make_link(0).'">Übersicht</a></li>';
 foreach($modules AS $group_name => $group) {
     $menu .= '<li>'.LF.$group_name;
-    
+
     if(!empty($group)) {
         $menu .= '<ul>';
-        
+
         foreach($group AS $module_do => $module) {
             if(!$module['menuEntry']) continue;
-            
+
             $menu .= sprintf('<li>%s<a href="%s">%s</a></li>',
                              LF,
                              make_link(0, 'do='.$module_do),
                              $module['name']);
         }
-        
+
         $menu .= '</ul>';
     }
-    
+
     $menu .= '</li>';
 }
 $menu .= '</ul>';
@@ -425,7 +425,7 @@ $template->setVar('navigation', $menu);
 
 //Insert login/logout form
 if($USER->loggedIn()) {
-    $usr_form = 'Hallo '.$USER->getName().' 
+    $usr_form = 'Hallo '.$USER->getName().'
             <input type="hidden" name="usr_logout" />
             <button type="submit">Logout</button>';
 } else {

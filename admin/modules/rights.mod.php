@@ -61,9 +61,9 @@ $menu = new menu($DB, $CONFIG, null);
 
 if(isset($_POST['save'])) {
     $rights_new = array();
-    
+
 	$post_rights = isset($_POST['rights']) ? $_POST['rights'] : array();
-	
+
     foreach($post_rights AS $right) {
         if('' !== $_POST['value_'.$right]) {
             $rights_new[] = '('.$id.', \''.$DB->escape($right).'\', \''.$DB->escape($_POST['value_'.$right]).'\')';
@@ -71,7 +71,7 @@ if(isset($_POST['save'])) {
             $rights_new[] = '('.$id.', \''.$DB->escape($right).'\', NULL)';;
         }
     }
-    
+
     $DB->execute("DELETE FROM `".DB_PRE."sys_rights` WHERE `userID` = ".$id);
     $DB->execute("INSERT INTO `".DB_PRE."sys_rights`(`userID`, `right`, `value`) VALUES".implode(',', $rights_new));
 }

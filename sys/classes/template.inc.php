@@ -36,12 +36,12 @@ class template
 
     protected $content;
     protected $edited_content;
-    
+
     protected $cleaned = false;
-    
+
     protected $delmiter = array("left" => "{", "right" => "}", "row_l" => "start:", "row_r" => "end:");
     protected $additional_chars = array();
-    
+
     public function __construct($file, $string = false)
     {
         if($string OR !is_file($file)) {
@@ -50,7 +50,7 @@ class template
             $this->setFile($file);
         }
     }
-    
+
     public function setFile($file)
     {
         if(is_file($file)) {
@@ -62,7 +62,7 @@ class template
             }
         }
     }
-    
+
     public function setDelimiter($left, $right, $row_l, $row_r)
     {
         if($left && $right && $row_l && $row_r &&
@@ -73,7 +73,7 @@ class template
         } else
             return false;
     }
-    
+
     public function addChars($chars)
     {
         if(empty($chars)) {
@@ -83,7 +83,7 @@ class template
         } else {
             $split = str_split($chars, 1);
         }
-        
+
         foreach($split AS $single_char) {
             if(in_array(trim($single_char), $this->additional_chars)) {
                 continue;
@@ -93,29 +93,29 @@ class template
                 $this->additional_chars[] = trim($single_char);
             }
         }
-        
+
         return true;
     }
-    
+
     public function setVar($name, $content)
     {
         if(true === $this->cleaned) {
             logit('class/template/setVar', 'Content already cleaned. Cannot add more vars!');
             return false;
         }
-        
+
         $this->content = str_replace($this->delmiter['left'].$name.$this->delmiter['right'], $content, $this->content);
-        
+
         return true;
     }
-    
+
     public function setArray($array)
     {
         if(true === $this->cleaned) {
             logit('class/template/setArray', 'Content already cleaned. Cannot add more vars!');
             return false;
         }
-        
+
         if(is_array($array)) {
             foreach($array AS $name => $content) {
                 $this->setVar($name, $content);
@@ -123,17 +123,17 @@ class template
         } else {
             return false;
         }
-        
+
         return true;
     }
-    
+
     public function setRow($name, array $array)
     {
         if(true === $this->cleaned) {
             logit('class/template/setRow', 'Content already cleaned. Cannot add more vars!');
             return false;
         }
-        
+
         list($part_a, $tmp) = explode($this->delmiter['left'].
                                     $this->delmiter['row_l'].
                                     $name.
@@ -143,19 +143,19 @@ class template
                                     $name.
                                     $this->delmiter['right'], $tmp);
         $final_content = "";
-        
+
         foreach($array AS $element) {
             $tmp_tmp = new template($row_content, true);
             $tmp_tmp->setArray($element);
             $final_content .= $tmp_tmp->getHTML();
             $tmp_tmp = null;
         }
-        
+
         $this->content = $part_a.$final_content.$part_b;
-        
+
         return true;
     }
-    
+
     public function getHTML($cleanup = false)
     {
         if($cleanup) {
@@ -165,7 +165,7 @@ class template
         }
         if((true === $cleanup) AND (false === $this->cleaned)) {
             $this->cleaned = true;
-            
+
             $this->edited_content = preg_replace("#\\".$this->delmiter['left'].
                                           $this->delmiter['row_l']."(.+)\\".
                                           $this->delmiter['right']."(.*)\\".
@@ -173,37 +173,37 @@ class template
                                           $this->delmiter['row_r']."\\1\\".
                                           $this->delmiter['right']."#sU", " ", $this->content);
             $this->edited_content = preg_replace("#\\".$this->delmiter['left']."([a-zA-Z0-9_:".
-            
+
                                           (('' === implode('\\', $this->additional_chars)) ? ''
                                           : '\\'.implode('\\', $this->additional_chars))
-                                          
+
                                           ."]+)\\".
                                           $this->delmiter['right']."#U", " ", $this->edited_content);
 
         }
-        
+
         if($cleanup) {
             return $this->edited_content;
         } else {
             return $this->content;
         }
     }
-    
+
     public function setVarCallback($name, $call_function)
     {
         if(!preg_match("#^[a-zA-Z0-9_".
-                      
+
                       (('' === implode('\\', $this->additional_chars)) ? ''
                       : '\\'.implode('\\', $this->additional_chars)).
-                                          
+
                       "]+\$#", trim($name))) {
             logit('classes/template/callback', '$name contained false chars!');
             return false;
         }
-        
+
         $pattern = "#\\{".$name."\\:(.+)\\}#U";
         $this->content = preg_replace_callback($pattern, $call_function, $this->content);
-        
+
         return true;
     }
 

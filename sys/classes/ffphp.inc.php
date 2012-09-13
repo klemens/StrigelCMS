@@ -10,7 +10,7 @@
  * the form. The data, the user has already
  * entered, can also be imported. Go to the
  * website for examples.
- * 
+ *
  * @author Klemens Schölhorn <klemens@bayern-mail.de>
  * @copyright 2009 Klemens Schölhorn
  * @license http://creativecommons.org/licenses/by-sa/3.0/
@@ -19,12 +19,12 @@
 class ffphp
 {
     protected $current_id = 0;
-    
+
     protected $form_info = array();
     protected $highlight_row;
     protected $hidden_info_send = false;
     protected $used_mixed_file = false;
-    
+
     protected $required_options = array();
     protected $allowed_types = array(   'input_singleline',
                                         'input_multiline',
@@ -35,13 +35,13 @@ class ffphp
                                         'mixed_file',
                                         'mixed_hidden',
                                         'button');
-    
+
     protected $elements = array();
-    
+
     protected $error = false;
-    
+
     protected $IDs = array();
-    
+
     protected $lang = 'en';
     protected $locate = array('en' => array(  1 => 'You have to fill in this field!',
                                               2 => 'Your input does not have the right format!',
@@ -59,10 +59,10 @@ class ffphp
                                               6 => 'Sie müssen mehr als %s Einträge auswählen!',
                                               7 => 'Ihr Datei-Upload war nicht erfolgreich! Probieren Sie es ein zweites Mal oder kontaktieren Sie den Administrator!',
                                               8 => 'Sie müssen eine Datei hochladen!'));
-    
+
     const LF = "\n";
     const NL = "\r\n";
-    
+
     /**
      * Setting of some params for the form
      *
@@ -93,18 +93,18 @@ class ffphp
         if(!is_int($unq_id) OR (0 === $unq_id) OR (0 > $unq_id)) {
             throw new exception('ffpph: Unique ID not set correctly!');
         }
-        
+
         $this->current_id = 100 * $unq_id;
-        
+
         $this->form_info['action']           = trim($action);
         $this->form_info['method']           = trim($method);
         $this->highlight_row                 = $highlight_row ? true : false;
         $this->form_info['html_class']       = (!empty($html_class) AND is_array($html_class)) ? $html_class : array();
         $this->form_info['unq_id']           = $unq_id;
-                
+
         $this->_setRequiredOptions();
     }
-    
+
     /**
      * Select language
      *
@@ -123,12 +123,12 @@ class ffphp
         if(!isset($this->locate[trim($lang)])) {
             return false;
         }
-        
+
         $this->lang = trim($lang);
-        
+
         return true;
     }
-    
+
     /**
      * Add another language
      *
@@ -142,7 +142,7 @@ class ffphp
     public function addLang($name, $array)
     {
         $name = trim($name);
-        
+
         if(empty($name)) {
             return false;
         }
@@ -155,11 +155,11 @@ class ffphp
         if(count($array) !== count($this->locate['en'])) {
             return false;
         }
-        
+
         $this->locate[$name] = $array;
         return true;
     }
-    
+
     /**
      * Add a new fieldset
      *
@@ -181,23 +181,23 @@ class ffphp
     public function addFieldset($legend = '', $id = null, $html_class = array())
     {
         $legend = trim($legend);
-        
+
         if('' === $legend) {
             $legend = false;
         }
-        
+
         $entry = array();
         $entry['type']        = 'fieldset';
         $entry['legend']      = $legend;
         $entry['id']          = $id;
         $entry['html_class']  = (!empty($html_class) AND is_array($html_class)) ? $html_class : array();
         $entry['options']     = null;
-        
+
         $this->elements[++$this->current_id] = $entry;
-        
+
         return $this->current_id;
     }
-    
+
     /**
      * Add a new form field
      *
@@ -222,24 +222,24 @@ class ffphp
     public function addField($type, $options, $required = false, $check = false)
     {
         $type = trim($type);
-    
+
         if(empty($type) OR empty($options)) {
             throw new exception('ffphp: Type and options array can not be empty');
         }
-        
+
         if(!in_array($type, $this->allowed_types)) {
             throw new exception('ffphp: This type doesnt exist!');
         }
-        
+
         if(!$this->_isComplete($options, $type)) {
             throw new exception('ffphp: The options array isnt complete!');
         }
-        
-        
+
+
         if(empty($this->elements)) {
             $this->addFieldset();
         }
-        
+
         $entry = array();
         $entry['type'] = $type;
         $entry['options'] = $options;
@@ -247,16 +247,16 @@ class ffphp
         $entry['check'] = empty($check) ? array() : $check;
         $entry['error'] = false;
         $entry['error_message'] = '';
-        
+
         $this->elements[++$this->current_id] = $entry;
-        
+
         if('mixed_file' == $type) {
             $this->used_mixed_file = true;
         }
-        
+
         return $this->current_id;
     }
-    
+
     /**
      * Add your own error
      *
@@ -275,15 +275,15 @@ class ffphp
         if(!isset($this->elements[$unq_id])) {
             return false;
         }
-        
+
         $this->elements[$unq_id]['error'] = true;
         $this->elements[$unq_id]['error_message'] = $error_message;
-        
+
         $this->error = true;
-        
+
         return true;
     }
-    
+
     /**
      * Was the form sent?
      *
@@ -298,7 +298,7 @@ class ffphp
         return (isset($_REQUEST['ffphp-form-sent']) AND
                 (md5('ffphp'.$this->form_info['unq_id']) === $_REQUEST['ffphp-form-sent']));
     }
-    
+
     /**
      * Check whether the form is complete
      *
@@ -306,122 +306,122 @@ class ffphp
      * the information you required and if the user's
      * inputs match your requirements (the check array
      * in ffphp::addField()).
-     * 
+     *
      * @throws exception
      * @return bool Whether the form is complete or not
      */
     public function checkFormComplete()
     {
         $error = array();
-        
+
         foreach($this->elements AS &$element) {
             unset($select_id);
             unset($select_check);
             unset($select_array_count);
             unset($select_count);
-            
+
             if(empty($element['required']) AND empty($element['check'])) {
                 continue;
             }
-                        
+
             switch($element['type']) {
                 case 'fieldset':
                 case 'mixed_hidden':
                 case 'button':
                     continue 2;
-                
+
                 case 'input_singleline':
                 case 'input_multiline':
                     if(empty($_REQUEST[$element['options']['id']])) {
                         $element['error'] = true;
                         $element['error_message'] = $this->_errorMessage(1);
-                        
+
                         $this->error = true;
-                        
+
                         continue 2;
                     }
-                    
-                    
-                    
+
+
+
                     if(isset($element['check']['regex'])) {
                         if(!preg_match($element['check']['regex'],
                                        $_REQUEST[$element['options']['id']])) {
                             $element['error'] = true;
                             $element['error_message'] = !empty($element['check']['message'])
                                                         ? $element['check']['message'] : $this->_errorMessage(2);
-                            
+
                             $this->error = true;
-                            
+
                             continue 2;
                         }
                     }
                     break;
-                
+
                 case 'select_radio':
                 case 'select_check':
                 case 'select_list':
                 case 'select_list_group':
-                    
+
                     if(('select_radio' === $element['type'])
                        OR ('select_check' === $element['type'])) {
                         $select_id = $element['options']['name'];
                     } else {
                         $select_id = $element['options']['id'];
                     }
-                    
+
                     if(empty($_REQUEST[$select_id])) {
                         $element['error'] = true;
                         $element['error_message'] = $this->_errorMessage(3);
-                        
+
                         $this->error = true;
-                        
+
                         continue 2;
                     }
                     if(isset($element['check']['count'])) {
                         $select_check = substr($element['check']['count'], 0, 1);
                         $select_count = (int)substr($element['check']['count'], 1);
-                        
+
                         $select_array_count = count($_REQUEST[$select_id]);
-                        
+
                         switch($select_check) {
                             case '=':
                                 if($select_count !== $select_array_count) {
                                     $element['error'] = true;
                                     $element['error_message'] = !empty($element['check']['message'])
                                                                 ? $element['check']['message'] : $this->_errorMessage(4, $select_count);
-                                    
+
                                     $this->error = true;
                                 }
                                 break;
-                            
+
                             case '<':
                                 if($select_array_count >= $select_count) {
                                     $element['error'] = true;
                                     $element['error_message'] = !empty($element['check']['message'])
                                                                 ? $element['check']['message'] : $this->_errorMessage(5, $select_count);
-                                    
+
                                     $this->error = true;
                                 }
                                 break;
-                            
+
                             case '>':
                                 if($select_array_count <= $select_count) {
                                     $element['error'] = true;
                                     $element['error_message'] = !empty($element['check']['message'])
                                                                 ? $element['check']['message'] : $this->_errorMessage(6, $select_count);
-                                    
+
                                     $this->error = true;
                                 }
                                 break;
-                            
+
                             default:
                                 throw new exception('ffphp: No such comparator like: '.$select_check);
                         }
-                        
+
                         continue 2;
                     }
                     break;
-                
+
                 case 'mixed_file':
                     if(isset($_FILES[$element['options']['id']])) {
                         if(0 === $_FILES[$element['options']['id']]['error']) {
@@ -437,22 +437,22 @@ class ffphp
                         $element['error'] = true;
                         $element['error_message'] = $this->_errorMessage(8);
                     }
-                    
+
                     $this->error = true;
-                    
+
                     break;
-                
+
                 default:
                     throw new exception('ffphp: Code Error! Contact Admin! (Debug: '.$element['type'].')');
             }
         }
-        
+
         return !$this->error;
     }
-    
+
     /**
      * Assign user's input and selection to the form
-     * 
+     *
      * If you display a form a second time, because
      * is was not complete, you can assign the input
      * and selection of the user to the form.
@@ -465,14 +465,14 @@ class ffphp
         if(!$this->checkFormSent()) {
             throw new exception('ffphp: Dont try to assign Selection if form was not sent!');
         }
-        
+
         foreach($this->elements AS &$element) {
             if(isset($element['options'])) {
                 $options = &$element['options'];
             }
-            
+
             switch($element['type']) {
-                
+
                 case 'mixed_hidden':
                 case 'input_singleline':
                     if(isset($options['password']) && (true == $options['password'])) {
@@ -482,13 +482,13 @@ class ffphp
                         $options['value'] = $_REQUEST[$options['id']];
                     }
                     break;
-                
+
                 case 'input_multiline':
                     if(isset($_REQUEST[$options['id']])) {
                         $options['text'] = $_REQUEST[$options['id']];
                     }
                     break;
-                
+
                 case 'select_radio':
                     foreach($options['elements'] AS &$element_radio) {
                         if(isset($_REQUEST[$options['name']]) AND ($_REQUEST[$options['name']] == $element_radio['value'])) {
@@ -500,13 +500,13 @@ class ffphp
                         }
                     }
                     break;
-                
+
                 case 'select_check':
                     $clear_check = false;
                     if(empty($_REQUEST[$options['name']])) {
                         $clear_check = true;
                     }
-                    
+
                     foreach($options['elements'] AS &$element_check) {
                         if($clear_check) {
                             $element_check['flag'] =
@@ -522,14 +522,14 @@ class ffphp
                         }
                     }
                     break;
-                
+
                 case 'select_list':
                     if(isset($options['flag']) AND $this->_hasFlag($options['flag'], 'multiple')) {
                         $clear_list = false;
                         if(empty($_REQUEST[$options['id']])) {
                             $clear_list = true;
                         }
-                        
+
                         foreach($options['elements'] AS &$element_list) {
                             if($clear_list) {
                                 $element_list['flag'] =
@@ -556,14 +556,14 @@ class ffphp
                         }
                     }
                     break;
-                
+
                 case 'select_list_group':
                     if(isset($options['flag']) AND $this->_hasFlag($options['flag'], 'multiple')) {
                         $clear_list_group = false;
                         if(empty($_REQUEST[$options['id']])) {
                             $clear_list_group = true;
                         }
-                        
+
                         foreach($options['elements'] AS &$element_list_group) {
                             foreach($element_list_group['options'] AS &$element_list_group2) {
                                 if($clear_list_group) {
@@ -596,18 +596,18 @@ class ffphp
 
                     }
                     break;
-                
+
                 case 'fieldset':
                 case 'button':
                 case 'mixed_file':
                     break;
-                
+
                 default:
                     throw new exception('ffphp: Code Error! Contact Admin! (Debug: '.$element['type'].')');
             }
         }
     }
-    
+
     /**
      * Get Error
      *
@@ -622,7 +622,7 @@ class ffphp
     {
         return $this->error;
     }
-    
+
     /**
      * Get the copmlete form in xHTML
      *
@@ -631,7 +631,7 @@ class ffphp
      * in the form, 'enctype="multipart/form-data"' is
      * automaticly addad to the form element and the method
      * is set to POST.
-     * 
+     *
      * @return string Complete form in xHTML
      */
     public function getHTML()
@@ -641,33 +641,33 @@ class ffphp
             $this->addField('mixed_hidden', array('id' => 'ffphp-form-sent',
                                                   'value' => md5('ffphp'.$this->form_info['unq_id'])));
         }
-        
+
         if($this->used_mixed_file) {
             $this->form_info['method'] = 'post';
         }
-        
+
         $ret  = sprintf('<form%s method="%s" action="%s" accept-charset="UTF-8" class="%s">'.self::LF,
                             $this->used_mixed_file ? ' enctype="multipart/form-data"' : '',
                             $this->form_info['method'],
                             $this->form_info['action'],
                             trim('ffphp '.implode(' ', $this->form_info['html_class'])));
-        
+
         $ret .= $this->_parseElements();
-        
+
         $ret .= '</form>'."\n";
-        
+
         return $ret;
     }
-    
+
     /**
      * @ignore
      */
     protected function _checkForRequired($options, $check)
     {
         $valid = true;
-        
+
         foreach($check AS $key => $value) {
-            
+
             if(is_array($value)) {
                 foreach($options[$key] AS $sub_array) {
                     $valid = $this->_checkForRequired($sub_array, $value[0]);
@@ -677,15 +677,15 @@ class ffphp
                 }
                 continue;
             }
-        
+
             if(!isset($options[$value])) {
                 return false;
-            } 
+            }
         }
-        
+
         return $valid;
     }
-    
+
     /**
      * Checks whether the options array is complete
      *
@@ -694,7 +694,7 @@ class ffphp
      * ffphp::_setRequiredOptions()
      *
      * @see ffphp::_setRequiredOptions()
-     * @return bool 
+     * @return bool
      */
     protected function _isComplete($options, $type)
     {
@@ -702,13 +702,13 @@ class ffphp
         if(!isset($this->required_options[$type])) {
             return false;
         }
-        
+
         return $this->_checkForRequired($options, $this->required_options[$type]);
     }
-    
+
     /**
      * Creates the xHTML code
-     * 
+     *
      * This method is called by ffphp::getHTML().
      *
      * @see ffphp::getHTML()
@@ -719,73 +719,73 @@ class ffphp
         if(empty($this->elements)) {
             return false;
         }
-                
+
         static $open_fieldset;
         static $highlight = false;
         $ret = '';
         $add = '';
         $but = '';
-        
+
         foreach($this->elements AS $element) {
             $type = $element['type'];
             $options = $element['options'];
-            
+
             if(isset($element['required']) && $element['required']) {
                 if(isset($options['label'])) {
                     $options['label'] .= ' <em title="Eingabe benötigt!">*</em>';
                 }
             }
-            
+
             if('mixed_hidden' === $type) {
                 $tid = $this->_ID($options['id']);
-                
+
                 $add .= '<input type="hidden" id="'.$tid.'" name="'.$tid.'"';
-                
+
                 if(isset($options['value'])) {
                     $add .= ' value="'.$this->_htmlChars($options['value']).'"';
                 }
-                
+
                 $add .= ' />'.self::LF;
-                
+
                 continue;
             }
-            
+
             if('button' === $type) {
                 $tid = $this->_ID($options['id']);
-                
+
                 $but .= '<fieldset class="ffphp-button">'.self::LF.'<ol>';
                 $but .= self::LF.'<li>'.self::LF;
-                
+
                 $but .= '<button id="'.$tid.'" name="'.$tid.'"';
-                
+
                 $action_type = ('reset' === $options['type']) ? 'reset' : 'submit';
-                
+
                 $but .= ' type="'.$action_type.'"';
-                
+
                 if(isset($options['value'])) {
                     $but .= ' value="'.$options['value'].'"';
                 }
-                
+
                 if(isset($options['flag'])) {
                     $but .= $this->_flags($options['flag']);
                 }
-                
+
                 $but .= '>';
-                
+
                 $but .= $options['text'];
-                
+
                 $but .= '</button>';
-                
+
                 $but .= '</li>'.self::LF.'</ol>'.self::LF;
                 $but .= '</fieldset>'.self::LF;
-                
+
                 continue;
             }
-            
-            
+
+
             if((true === $this->highlight_row) && ('fieldset' !== $type)) {
                 $ret .= '<li';
-                
+
                 if($highlight) {
                     $highlight = false;
                     $ret .= ' class="ffphp-r2"';
@@ -793,13 +793,13 @@ class ffphp
                     $highlight = true;
                     $ret .= ' class="ffphp-r1"';
                 }
-                
+
                 $ret .= '>'.self::LF;
             } else if('fieldset' !== $type) {
                 $ret .= '<li>'.self::LF;
             }
-            
-            
+
+
             switch($type) {
                 case 'fieldset':
                     if($open_fieldset) {
@@ -807,315 +807,315 @@ class ffphp
                         $ret .= '</fieldset>'.self::LF;
                     }
                     $ret .= '<fieldset';
-                    
+
                     if($element['html_class']) {
                         $ret .= ' class="'.implode(' ', $element['html_class']).'"';
                     }
-                    
+
                     if($element['id']) {
                         $ret .= ' id="'.$element['id'].'"';
                     }
-                    
+
                     $ret .= '>'.self::LF;
-                    
+
                     if($element['legend']) {
                         $ret .= '<legend>'.$element['legend'].'</legend>'.self::LF;
                     }
-                    
+
                     $ret .= '<ol>'.self::LF;
-                    
+
                     $open_fieldset = true;
                     break;
-                
+
                 case 'input_singleline':
                     $tid = $this->_ID($options['id']);
-                    
+
                     $ret .= '<label for="'.$tid.'">'.$options['label'].'</label>'.self::LF;
                     $ret .= '<input id="'.$tid.'" name="'.$tid.'"';
-                    
+
                     if(isset($options['password']) && (true == $options['password'])) {
                         $ret .= ' type="password"';
                     } else {
                         $ret .= ' type="text"';
                     }
-                    
+
                     if(isset($options['value'])) {
                         $ret .= ' value="'.$this->_htmlChars($options['value']).'"';
                     }
-                    
+
                     if(isset($options['maxlength'])) {
                         $ret .= ' maxlength="'.$options['maxlength'].'"';
                     }
-                    
+
                     if(isset($options['flag'])) {
                         $ret .= $this->_flags($options['flag']);
                     }
-                    
+
                     if($element['error']) {
                         $ret .= ' class="ffphp-error"';
                     }
-                    
+
                     $ret .= ' />'.self::LF;
-                    
+
                     if($element['error_message']) {
                         $ret .= '<em class="ffphp-error">'.$element['error_message'].'</em>'.self::LF;
                     }
-                    
+
                     break;
-                
+
                 case 'input_multiline':
                     $tid = $this->_ID($options['id']);
-                    
+
                     $ret .= '<label for="'.$tid.'">'.$options['label'].'</label>'.self::LF;
                     $ret .= '<textarea id="'.$tid.'" name="'.$tid.'"';
-                    
+
                     $cols = isset($options['cols']) ? $options['cols'] : 15;
                     $rows = isset($options['rows']) ? $options['rows'] : 4;
-                    
+
                     $ret .= ' cols="'.$cols.'" rows="'.$rows.'"';
-                    
+
                     if(isset($options['flag'])) {
                         $ret .= $this->_flags($options['flag']);
                     }
-                    
+
                     if($element['error']) {
                         $ret .= ' class="ffphp-error"';
                     }
-                    
+
                     $ret .= '>';
-                    
+
                     if(isset($options['text'])) {
                         $ret .= $this->_htmlChars($options['text']);
                     }
-                    
+
                     $ret .= '</textarea>'.self::LF;
-                    
+
                     if($element['error_message']) {
                         $ret .= '<em class="ffphp-error">'.$element['error_message'].'</em>'.self::LF;
                     }
-                    
+
                     break;
-                
+
                 case 'select_list':
                     $tid = $this->_ID($options['id']);
-                    
+
                     $ret .= '<label for="'.$tid.'">'.$options['label'].'</label>'.self::LF;
-                    
+
                     $ret .= '<select id="'.$tid.'" name="'.
                             ((isset($options['flag']) && $this->_hasFlag($options['flag'], 'multiple')) ? $tid.'[]' : $tid).
                             '"';
-                    
+
                     $size = isset($options['size']) ? $options['size'] : 1;
-                    
+
                     $ret .= ' size="'.$size.'"';
-                    
+
                     if(isset($options['flag'])) {
                         $ret .= $this->_flags($options['flag']);
                     }
-                    
+
                     if($element['error']) {
                         $ret .= ' class="ffphp-error"';
                     }
-                    
+
                     $ret .= '>'.self::LF;
-                    
+
                     foreach($options['elements'] AS $select_option) {
                         $ret .= '<option value="'.$select_option['value'].'"';
-                        
+
                         if(isset($select_option['flag'])) {
                             $ret .= $this->_flags($select_option['flag']);
                         }
-                        
+
                         $ret .= '>'.$select_option['title'].'</option>'.self::LF;
                     }
-                    
+
                     $ret .= '</select>'.self::LF;
-                    
+
                     if($element['error_message']) {
                         $ret .= '<em class="ffphp-error">'.$element['error_message'].'</em>'.self::LF;
                     }
-                    
+
                     break;
-                
+
                 case 'select_list_group':
                     $tid = $this->_ID($options['id']);
-                    
+
                     $ret .= '<label for="'.$tid.'">'.$options['label'].'</label>'.self::LF;
-                    
+
                     $ret .= '<select id="'.$tid.'" name="'.
                             ((isset($options['flag']) && $this->_hasFlag($options['flag'], 'multiple')) ? $tid.'[]' : $tid).
                             '"';
-                    
+
                     $size = isset($options['size']) ? $options['size'] : 1;
-                    
+
                     $ret .= ' size="'.$size.'"';
-                    
+
                     if(isset($options['flag'])) {
                         $ret .= $this->_flags($options['flag']);
                     }
-                    
+
                     if($element['error']) {
                         $ret .= ' class="ffphp-error"';
                     }
-                    
+
                     $ret .= '>'.self::LF;
-                    
+
                     foreach($options['elements'] AS $select_group_group) {
                         $ret .= '<optgroup label="'.$select_group_group['label'].'"';
-                        
+
                         if(isset($select_group_group['flag'])) {
                             $ret .= $this->_flags($select_group_group['flag']);
                         }
-                        
+
                         $ret .= '>'.self::LF;
-                        
+
                         foreach($select_group_group['options'] AS $select_group_option) {
                             $ret .= '<option value="'.$select_group_option['value'].'"';
-                            
+
                             if(isset($select_group_option['flag'])) {
                                 $ret .= $this->_flags($select_group_option['flag']);
                             }
-                            
+
                             $ret .= '>'.$select_group_option['title'].'</option>'.self::LF;
                             }
-                        
+
                         $ret .= '</optgroup>'.self::LF;
                     }
-                    
+
                     $ret .= '</select>'.self::LF;
-                    
+
                     if($element['error_message']) {
                         $ret .= '<em class="ffphp-error">'.$element['error_message'].'</em>'.self::LF;
                     }
-                    
+
                     break;
-                
+
                 case 'select_radio':
                     $ret .= '<fieldset>'.self::LF;
-                    
+
                     $ret .= '<legend';
-                    
+
                     if($element['error']) {
                         $ret .= ' class="ffphp-error"';
                     }
-                    
+
                     $ret .= '>'.$options['label'].'</legend>'.self::LF;
-                    
+
                     if($element['error_message']) {
                         $ret .= '<em class="ffphp-error">'.$element['error_message'].'</em>'.self::LF;
                     }
-                    
+
                     $name = $options['name'];
                     $count = 1;
-                    
+
                     foreach($options['elements'] AS $input_radio) {
                         $tid = $this->_ID($name.'-'.$count++);
-                        
+
                         $ret .= '<label for="'.$tid.'">'.self::LF;
-                        
+
                         $ret .= '<input type="radio" name="'.$name.'" id="'.$tid.'" value="'.$input_radio['value'].'"';
-                        
+
                         if(isset($input_radio['flag'])) {
                             $ret .= $this->_flags($input_radio['flag']);
                         }
-                        
+
                         $ret .= ' />'.self::LF;
-                        
+
                         $ret .= $input_radio['label'].self::LF;
-                        
+
                         $ret .= '</label>'.self::LF;
                     }
-                    
+
                     $ret .= '</fieldset>';
                     break;
-                
+
                 case 'select_check':
                     $ret .= '<fieldset>'.self::LF;
-                    
+
                     $ret .= '<legend';
-                    
+
                     if($element['error']) {
                         $ret .= ' class="ffphp-error"';
                     }
-                    
+
                     $ret .= '>'.$options['label'].'</legend>'.self::LF;
-                    
+
                     if($element['error_message']) {
                         $ret .= '<em class="ffphp-error">'.$element['error_message'].'</em>'.self::LF;
                     }
-                    
+
                     $name = $options['name'];
                     $count = 1;
-                    
+
                     foreach($options['elements'] AS $input_radio) {
                         $tid = $this->_ID($name.'-'.$count++);
-                        
+
                         $ret .= '<label for="'.$tid.'">'.self::LF;
-                        
+
                         $ret .= '<input type="checkbox" name="'.$name.'[]" id="'.$tid.'" value="'.$input_radio['value'].'"';
-                        
+
                         if(isset($input_radio['flag'])) {
                             $ret .= $this->_flags($input_radio['flag']);
                         }
-                        
+
                         $ret .= ' />'.self::LF;
-                        
+
                         $ret .= $input_radio['label'].self::LF;
-                        
+
                         $ret .= '</label>'.self::LF;
                     }
-                    
+
                     $ret .= '</fieldset>';
                     break;
-                
+
                 case 'mixed_file':
                     $tid = $this->_ID($options['id']);
-                    
+
                     $ret .= '<label for="'.$tid.'"';
-                    
+
                     $ret .= '>'.$options['label'].'</label>'.self::LF;
-                    
+
                     $ret .= '<input type="file" id="'.$tid.'" name="'.$tid.'"';
-                    
+
                     if(isset($options['flag'])) {
                         $ret .= $this->_flags($options['flag']);
                     }
-                    
+
                     $ret .= ' />'.self::LF;
-                    
+
                     if($element['error_message']) {
                         $ret .= '<em class="ffphp-error">'.$element['error_message'].'</em>'.self::LF;
                     }
-                    
+
                     break;
             }
-            
+
             if((true === $this->highlight_row) && ('fieldset' !== $type)) {
                 $ret .= '</li>'.self::LF;
             } else if('fieldset' !== $type) {
                 $ret .= '</li>'.self::LF;
             }
         }
-        
+
         if($open_fieldset) {
             $ret .= '</ol>'.self::LF;
             $ret .= '</fieldset>'.self::LF;
         }
-        
+
         if($but) {
             $ret .= $but;
         }
-        
+
         if($add) {
             $ret .= '<div>'.self::LF.$add.'</div>'.self::LF;
         }
-        
+
         return $ret;
     }
-    
+
     /**
      * Create an error message
-     * 
+     *
      * This method retuns a readable error message
      * when you give it the id of the error. It can
      * also replace one placeholder.
@@ -1131,19 +1131,19 @@ class ffphp
         if(!isset($this->locate[$this->lang][$error])) {
             throw new exception('ffphp: Could not create error message: '.$error);
         }
-        
+
         if(empty($replace)) {
             return $this->locate[$this->lang][$error];
         } else {
             return sprintf($this->locate[$this->lang][$error], $replace);
         }
     }
-    
+
     /**
      * Set the check routines for the options array
      *
      * This method sets the required_options array.
-     * 
+     *
      * @see ffphp::$required_options
      * @return void
      */
@@ -1158,17 +1158,17 @@ class ffphp
         $req['mixed_file']        = array('label', 'id');
         $req['mixed_hidden']      = array('id');
         $req['button']            = array('id', 'type', 'text');
-        
+
         $this->required_options = $req;
     }
-    
+
     /**
      * Save and check the ids of the form elements
      *
      * This method adds ids to a list and checks if
      * they are used several times. Every id can
      * only be used one time.
-     * 
+     *
      * @param string $id The id
      * @return string The id
      * @throws exception
@@ -1181,33 +1181,33 @@ class ffphp
         $this->IDs[] = $id;
         return $id;
     }
-    
+
     /**
      * Create xHTML form flag group
      *
      * This method makes out of a flag group
      * (eg: 'checked|disabled') valid xHTML
      * flags (eg: 'checked="checked"'.
-     * 
+     *
      * @param string $flags Flag group
      * @return string xHTML flags
      */
     protected function _flags($flags)
     {
         $ret = '';
-                
+
         $flags = explode('|', $flags);
-        
+
         foreach($flags AS $flag) {
             if(empty($flag)) {
                 continue;
             }
             $ret .= ' '.$flag.'="'.$flag.'"';
         }
-        
+
         return $ret;
     }
-    
+
     /**
      * Check the flag group for the specified flag
      *
@@ -1221,10 +1221,10 @@ class ffphp
     protected function _hasFlag($flags, $flag)
     {
         $flags = explode('|', $flags);
-        
+
         return in_array($flag, $flags);
     }
-    
+
     /**
      * Add a flag to a flag group
      *
@@ -1237,14 +1237,14 @@ class ffphp
     protected function _addFlag($flags, $flag_add)
     {
         $flags = explode('|', $flags);
-        
+
         if(!in_array($flag_add, $flags)) {
             $flags[] = $flag_add;
         }
-        
+
         return implode('|', array_filter($flags));
     }
-    
+
     /**
      * Remove a flag from a flag group
      *
@@ -1257,14 +1257,14 @@ class ffphp
     protected function _removeFlag($flags, $flag_remove)
     {
         $flags = explode('|', $flags);
-        
+
         if(in_array($flag_remove, $flags)) {
             unset($flags[array_search($flag_remove, $flags)]);
         }
-        
+
         return implode('|', array_filter($flags));
     }
-    
+
     /**
      * Alias for htmlspecialchars()
      *

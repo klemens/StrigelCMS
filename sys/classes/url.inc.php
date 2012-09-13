@@ -36,13 +36,13 @@ class url
 
 	protected $server;
 	protected $parameters;
-	
+
 	protected $startpage;
-	
+
 	protected $mod_rewrite = false;
-	
+
 	protected $CONFIG;
-	
+
 	public function __construct(&$CONFIG, $host = false)
 	{
 		if($CONFIG) {
@@ -51,7 +51,7 @@ class url
 			logit("class/menu", "No Settings Class given");
 			die("Fatal Error! Call Admin!");
 		}
-		
+
 		//decide using mod_rewrite or not
 		//if(!isset($_GET['mod_rewrite'])) {
         //    $this->no_mod_rewrite = true;
@@ -71,9 +71,9 @@ class url
 				$this->server = trim($host.'/');
 			}
 		}
-		
+
 		//extract parameters from url
-		
+
 		//Get the real path to the script
         $url_dir_remove = dirname($_SERVER['SCRIPT_NAME']);
 
@@ -107,17 +107,17 @@ class url
             //and remove the virtual .html
             $parameters[] = str_replace('.html', '', $single_parameter);
         }
-        
+
 		$this->parameters = $parameters;
-	
+
 	}
-	
+
 	public function setStartpage($startpage)
 	{
         $this->startpage = $startpage;
         $this->setComponent($startpage);
 	}
-	
+
 	public function getParameter($number = false)
 	{
 		if($number !== false) {
@@ -130,7 +130,7 @@ class url
 			return $this->parameters;
 		}
 	}
-	
+
 	public function getComponent()
 	{
         $parameters = $this->parameters;
@@ -140,7 +140,7 @@ class url
             return false;
         }
 	}
-	
+
 	private function setComponent($component)
 	{
         if(count($this->parameters) == 0) {
@@ -149,7 +149,7 @@ class url
         }
         return false;
 	}
-	
+
 	public function getArgument($number = false)
 	{
         if(count($this->parameters) <= 1) {
@@ -157,11 +157,11 @@ class url
         } else {
             $arguments = $this->parameters;
             array_shift($arguments);
-            
+
             if(empty($arguments)) {
                 return array();
             }
-            
+
             if($number !== false) {
                 if(isset($arguments[$number])) {
                     return $arguments[$number];
@@ -173,17 +173,17 @@ class url
             }
         }
     }
-    
+
 	public function getServer()
 	{
 		return $this->server;
 	}
-	
+
 	public function setModRewrite($bool)
 	{
         $this->mod_rewrite = $bool;
 	}
-	
+
 	public function makeLink($parameters, $force_mod_rewrite = false)
 	{
         $link = '';
@@ -200,18 +200,18 @@ class url
             $parameters = explode('/', $parameters);
             $count_parameters = count($parameters);
         }
-		
+
 		$host = $this->server;
 		if(substr($host, -1) != '/') {
 			$host .= '/';
 		}
-				
+
 		$link .= $host;
 
 		if(!$this->mod_rewrite) {
             $link .= 'index.php/';
 		}
-		
+
 		if($count_parameters == 0) {
 			return false;
 		} elseif($count_parameters == 1) {
@@ -223,7 +223,7 @@ class url
 			$link .= implode("/", $parameters);
 			$link .= ".html";
 		}
-		
+
 		if($link) {
 			return $link;
 		} else {

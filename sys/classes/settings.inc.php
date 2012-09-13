@@ -35,10 +35,10 @@ class settings
 {
 
     protected $database;
-    
+
     protected $settings = array();
     protected $loaded = false;
-    
+
     public function __construct(&$database)
     {
         if($database) {
@@ -47,41 +47,41 @@ class settings
             logit("class/settings", "No Database given");
             die("Fatal Error! Call Admin!");
         }
-        
+
         $this->_loadSettings();
     }
-    
+
     public function _loadSettings()
     {
         if($this->loaded) {
             return true;
         }
         $this->loaded = true;
-        
+
         $q = $this->database->query("SELECT `section`, `value`, `name` FROM `".DB_PRE."sys_settings`");
-        
+
         if(0 == $q->num_rows()) {
             logit("class/settings/_loadSettings", "Not Settings!");
             $q = null;
             return true;
         }
-        
+
         while(false !== ($setting = $q->fetch())) {
             $this->settings[trim($setting->section)][trim($setting->name)] = trim($setting->value);
         }
-        
+
         $q = null;
-        
+
         return true;
     }
-    
+
     public function get($section, $name)
     {
         if(!($section && $name)) {
             logit("class/settings/get", "Not both name/section given!");
             return false;
         }
-        
+
         if(isset($this->settings[trim($section)][trim($name)])) {
             return $this->settings[trim($section)][trim($name)];
         } else {
@@ -89,16 +89,16 @@ class settings
             return false;
         }
     }
-    
+
     public function set($section, $name, $value)
     {
         if(!($section && $name && $value)) {
             logit("class/settings/set", "Not both name/section given!");
             return false;
         }
-        
+
         $q = $this->database->query("SELECT value FROM ".DB_PRE."sys_settings WHERE section = '".$this->database->escape($section)."' AND name = '".$this->database->escape($name)."'");
-        
+
         if($q->num_rows() == 0) {
             $query = "INSERT INTO ".DB_PRE."sys_settings(name, section, value) VALUES('".$this->database->escape($name)."', '".$this->database->escape($section)."', '".$this->database->escape($value)."')";
         } elseif($q->num_rows() == 1) {
@@ -107,39 +107,39 @@ class settings
             logit("class/settings/set", "Too many results!");
             die("Call Admin!");
         }
-        
+
         $q = null;
-        
+
         $success = $this->database->execute($query);
-        
+
         if($success) {
             $this->settings[trim($section)][trim($name)] = $value;
         }
-        
+
         return $success;
     }
-    
+
     public function delete($section, $name)
     {
         if(!($section && $name)) {
             logit("class/settings/delete", "Not both name/section given!");
             return false;
         }
-        
+
         $q = $this->database->query("DELETE FROM ".DB_PRE."sys_settings WHERE section = '".$this->database->escape($section)."' AND name = '".$this->database->escape($name)."' LIMIT 1");
-        
+
         $affected = $q->affected_rows();
-        
+
         $q = null;
-        
+
         if(1 == $affected) {
             $this->settings[trim($section)][trim($name)] = null;
             unset($this->settings[trim($section)][trim($name)]);
         }
-        
+
         return $affected;
     }
-    
+
     public function getAll($section = false)
     {
         if(!$section) {

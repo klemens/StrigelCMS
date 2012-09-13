@@ -38,11 +38,11 @@ if($af_dirhandle = opendir($af_dir)) {
     while(false !== ($af_file = readdir($af_dirhandle))) {
         if($af_file == "." OR $af_file == ".." OR $af_file == $af_filename OR is_dir($af_dir.'/'.$af_file))
             continue;
-        
+
 		if(substr($af_file, -7) == "inc.php") {
             require_once($af_dir . '/' . $af_file);
 		}
-    }    
+    }
 } else {
     die("Funktionen konnten nicht geöffnet werden.");
 }

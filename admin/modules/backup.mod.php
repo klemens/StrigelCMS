@@ -33,26 +33,26 @@ if(!defined('SCMS')) {
 
 if(!empty($_GET['action']) && ($_GET['action'] === 'create')) {
     $f_name = 'backup/backup_'.date('Y-m-d_H-i-s').'.sql';
-    
+
     $f = fopen($f_name, "w");
 
     $q = $DB->query("SHOW TABLES FROM ".MYSQL_DB);
 
     while (false !== ($cells = $q->fetch(SQL_ARRAY))) {
         $table = $cells[0];
-        
-        fwrite($f,"\nDROP TABLE `$table`;\n"); 
-        
+
+        fwrite($f,"\nDROP TABLE `$table`;\n");
+
         $q2 = $DB->query("SHOW CREATE TABLE `$table`");
         if ($q2) {
             $create = $q2->fetch(SQL_ARRAY);
             $create[1] .= ";";
 
             fwrite($f, $create[1]."\n\n");
-            
+
             $q3 = $DB->query("SELECT * FROM `$table`");
             $num = $q3->num_fields();
-            
+
             while ($row = $q3->fetch(SQL_ARRAY)){
                 $line = "INSERT INTO `$table` VALUES(";
                 for ($i=1;$i<=$num;$i++) {
@@ -68,7 +68,7 @@ if(!empty($_GET['action']) && ($_GET['action'] === 'create')) {
     $q3 = null;
 
     fclose($f);
-    
+
     success_message(1, 'Backup wurde erfolgreich angelegt!');
 }
 
@@ -79,7 +79,7 @@ echo '<h2>Backups</h2>'.LF;
 echo '<table><tr><th>Vorhandene Backups</th></tr>'.LF;
 foreach(scandir('backup/', 1) AS $file) {
     if($file === '.' OR $file === '..') continue;
-    
+
     if(substr($file, -4) === '.sql')
         echo '<tr><td>'.$file.'</td></tr>'.LF;
 }

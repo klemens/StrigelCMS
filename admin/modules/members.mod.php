@@ -79,11 +79,11 @@ if(!empty($_GET['action']) && isset($_GET['id'])) {
             case 'activate':
                 $DB->execute("UPDATE `".DB_PRE."sys_user` SET `active` = `active` XOR 1 WHERE `id` = ".$id." LIMIT 1");
                 break;
-            
+
             case 'delete':
                 success_message(2, 'Wollen Sie \''.$_GET['username'].'\' wirklich löschen? <a href="'.make_link(2, 'action=delete2').'">Löschen</a>!');
                 break;
-            
+
             case 'delete2':
                 if($DB->execute("DELETE FROM `".DB_PRE."sys_user` WHERE `id` = ".$id." LIMIT 1")) {
                     success_message(1, '\''.$_GET['username'].'\' erfolgreich gelöscht!');

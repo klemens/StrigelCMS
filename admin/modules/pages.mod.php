@@ -63,7 +63,7 @@ if(!empty($_GET['action'])) {
                                             htmlspecialchars($_GET['id'])));
             }
             break;
-        
+
         case 'delete2':
             if($DB->execute(sprintf("DELETE FROM %ssys_content WHERE `id` = %s LIMIT 1",
                                         DB_PRE, $DB->escape($_GET['id'])))) {
@@ -76,14 +76,14 @@ if(!empty($_GET['action'])) {
             $menu = null;
             $menu = new menu($DB, $CONFIG, null);
             break;
-        
+
         case 'move':
             $move_arrow_action = 'move2';
             $move_arrow_id = $_GET['id'];
             success_message(2, 'Bitte das neue Elternelement für "'.
                                 $menu->getRealTitleById($_GET['id']).'" auswählen! (»)');
             break;
-        
+
         case 'move2':
             if($menu->moveNode((int)$_GET['id'], (int)$_GET['pid'])) {
                 if(0 === (int)$_GET['pid']) {
@@ -98,12 +98,12 @@ if(!empty($_GET['action'])) {
                 success_message(0, 'Fehler beim Umhängen!');
             }
             break;
-        
+
         case 'new':
             $move_arrow_action = 'new2';
             success_message(2, 'Bitte das Elternelement für die neue Seite auswählen!');
             break;
-            
+
         case 'new2':
             header('Location: '.str_replace('&amp;', '&', make_link(0, 'do=edit_pages', 'action=new', 'id='.$_GET['pid'])));
             break;
@@ -138,13 +138,13 @@ function admin_pages_show_tree($array, $move_arrow_action = false, $move_arrow_i
     if(!is_array($array)) {
         return false;
     }
-    
+
     echo "<ul>";
-    
+
     foreach($array AS $entry) {
         $show_arrow_sub = true;
         echo "<li>".LF;
-        
+
         if($move_arrow_action) {
             if(($entry['id'] == $move_arrow_id) || !$show_arrows) {
                 echo '<strong>»</strong>'.SP;
@@ -160,34 +160,34 @@ function admin_pages_show_tree($array, $move_arrow_action = false, $move_arrow_i
                 }
             }
         }
-        
+
         if($entry['active']) {
             echo $entry['real_title'].SP;
         } else {
             echo '<em>'.$entry['real_title'].'</em>'.SP;
         }
-        
+
         if(!$move_arrow_action) {
             echo '<small class="pages_actions">';
-            
+
             echo '<a href="'.make_link(1, 'action=move', 'id='.$entry['id']).'" class="linkMove" title="Seite umhängen"><img src="media/icons/move.png" alt="Seite umhängen" /></a>'.SP;
             echo '<a href="'.make_link(0, 'do=edit_pages', 'action=edit', 'id='.$entry['id']).'" class="linkEdit" title="Seite bearbeiten"><img src="media/icons/edit.png" alt="Seite bearbeiten" /></a>'.SP;
             echo '<a href="'.make_link(0, 'do=filemanager', 'id='.$entry['id']).'" class="linkFiles" title="Dateien verwalten"><img src="media/icons/folder.png" alt="Dateien verwalten" /></a>'.SP;
             echo '<a href="'.make_link(1, 'action=delete', 'id='.$entry['id']).'" class="linkDelete" title="Seite löschen"><img src="media/icons/delete.png" alt="Seite löschen" /></a>';
-            
+
             echo '</small>';
         }
-        
+
         //for module edit_page and filemanger
         $_SESSION['admin_allowedIds'][] = $entry['id'];
-        
+
         if(!empty($entry['child'])) {
             admin_pages_show_tree($entry['child'], $move_arrow_action, $move_arrow_id, $show_arrow_sub);
         }
-        
+
         echo "</li>";
     }
-    
+
     echo "</ul>";
 }
 

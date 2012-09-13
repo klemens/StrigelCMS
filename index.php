@@ -167,7 +167,7 @@ if(false === $content_type) {
     $event = new SiteEvent($URL->getComponent());
     $event->SetType(EVT_SITE);
     $PLUGINS->TriggerEvent($event);
-    
+
     $eventFile = $event->GetFile();
     if(!empty($eventFile) && is_file($eventFile)) {
         $content_type = 'file';
@@ -183,17 +183,17 @@ if(false === $content_type) {
 if($content_type == 'file') {
     //Use output buffering for simpler handling
     ob_start();
-    
+
     if(false === $include_file)
         $include_file = DIR_INCL.$CONTENT->getInformation('file');
-    
+
     if(file_exists($include_file)) {
         include_once($include_file);
     } else {
         logit('main/include_content', 'Requested File ('.$include_file.') doesnt exist!');
         echo 'Requested site could not be found!';
     }
-    
+
     $html_content = ob_get_contents();
     ob_end_clean();
 } else {

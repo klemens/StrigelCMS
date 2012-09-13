@@ -96,7 +96,7 @@ $CONFIG = new settings($DB);
 //Useful functions
 function getImageList($dir, $subdir = '/') {
     $files = scandir($dir);
-    
+
     $images = array();
     $folders = array();
     foreach($files AS $file) {
@@ -110,7 +110,7 @@ function getImageList($dir, $subdir = '/') {
         if(in_array(strtolower($ext), array('jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff')))
             $images[] =  $subdir.$file;
     }
-    
+
     return array_merge($folders, $images);
 }
 //--
@@ -123,27 +123,27 @@ switch($_GET['get']){
     case 'tinymce_image_list':
         if(empty($_GET['include']))
             die();
-        
+
         $include = str_replace('..', '', $_GET['include']);
         if(!is_dir('../'.DIR_FILES.$include))
             die();
-                
+
         $images = getImageList('../'.DIR_FILES.$include);
-        
+
         $output = array();
         foreach($images AS $image) {
             $output[] = '["'.substr($image, 1).'", "../'.DIR_FILES.$include.$image.'"]';
         }
-        
+
         echo 'var tinyMCEImageList = new Array('.LF.implode(",\n", $output).LF.');';
         break;
     case 'tinymce_content_css':
         if(empty($_GET['site']))
             die();
-        
+
         $result = $DB->qquery(sprintf("SELECT `css` FROM `%ssys_content` WHERE `link` = '%s' LIMIT 1",
                                       DB_PRE, $DB->escape($_GET['site'])));
-        
+
         if($result)
             echo $result->css;
         break;

@@ -119,9 +119,9 @@ if(isset($_GET['delete'])) {
                 if(!mysql_select_db($dbDatabase->GetValue()))
                     throw new Exception('Die Datenbank konnte nicht benutzt werden: '.mysql_error());
                 mysql_close();
-                
+
                 $db = new mysql($dbServer->GetValue(), $dbUser->GetValue(), $dbPassword->GetValue(), $dbDatabase->GetValue());
-                
+
                 //Write settings file
                 $settings = new template('settings.php');
                 $settings->setVar('adminMail', $adminMail->GetValue());
@@ -135,7 +135,7 @@ if(isset($_GET['delete'])) {
                 if(false === file_put_contents('../settings.php', $settings->getHTML()))
                     throw new Exception('Konnte die Einstellungsdatei nicht abspeichern. (Fehlende Schreibrechte?)');
                 $settings = null;
-                
+
                 //Write data into Database
                 $dump = new template('scms.sql');
                 $dump->setVar('dbPrefix', $dbPrefix->GetValue());
@@ -149,26 +149,26 @@ if(isset($_GET['delete'])) {
                     $line = trim($line);
                     if(empty($line) || substr($line, 0, 2) === '--')
                         continue;
-                    
+
                     $query .= $line;
                     if(substr($query, -1) === ';') {
                         $query = substr($query, 0, -1);
-                        
+
                         if(!$db->execute($query))
                             throw new Exception('Fehler beim Eintragen der Daten in die Datenbank: '.$db->get_last_error());
-                        
+
                         $query = '';
                     }
                 }
-                
+
                 //Add the admin user
                 define('DB_PRE', $dbPrefix->GetValue());
                 $admin = new user($db);
                 $admin->setSalt($advSalt->GetValue());
                 if(!$admin->register($adminUser->GetValue(), $adminName->GetValue(), $adminPassword->GetValue(), $adminMail->GetValue(), 1))
                     throw new Exception('Der Admin-Benutzer konnte nicht angelegt werden.');
-                
-                
+
+
                 //Finished!
                 echo '<p>Herzlichen Glückwunsch! Die Installation wurde erfolgreich abgeschlossen.</p>';
                 echo '<p><a href="./?delete">Löschen Sie nun das Installationsverzeichnis</a>, um die Installation abzuschließen.</p>';
@@ -190,21 +190,21 @@ if(isset($_GET['delete'])) {
 } else {
     //Add some default data
     $dbServer->value = 'localhost';
-    
+
     $adminUser->value = 'admin';
-    
+
     $advTimezone->choices->Select('Europe/Berlin');
-    
+
     $advSalt->value = substr(str_shuffle(str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',10)),0,10);;
-    
+
     $websiteName->value = $_SERVER['SERVER_NAME'];
-    
+
     $dbPrefix->value = 'scms_';
-    
+
     if((isset($_SERVER['SERVER_SOFTWARE']) && stristr($_SERVER['SERVER_SOFTWARE'], 'apache') !== false) ||
        (isset($_SERVER['SERVER_SIGNATURE']) && stristr($_SERVER['SERVER_SIGNATURE'], 'apache') !== false))
         $advRewrite->CheckChoices('Aktivieren');
-    
+
     $form->Show();
 }
 
@@ -214,14 +214,14 @@ if(isset($_GET['delete'])) {
 function deleteDir($folder) {
     foreach(scandir($folder) AS $entry) {
         if($entry == '.' || $entry == '..') continue;
-        
+
         if(is_dir($folder.$entry)) {
             deleteDir($folder.$entry.'/');
         } else {
             unlink($folder.$entry);
         }
     }
-    
+
     if(substr($folder, 0, -1) == '.')
         return rmdir('../install');
     else

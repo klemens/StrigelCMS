@@ -38,29 +38,29 @@ if(!empty($_GET['load'])) {
             if(!$file_handle) {
                 success_message(0, 'CMS Logdatei konnte nicht geöffnet werden!');
             }
-            
+
             $inserts = array();
-            
+
             while(($current_line = fgets($file_handle)) !== false) {
                 $time = trim(substr($current_line, 0, 25));
                 $message = trim(substr($current_line, 28));
-                
+
                 $mysql_datetime = substr($time, 0, -6);
-                
+
                 $inserts[] = sprintf("('%s', '%s')",
                                         $DB->escape($mysql_datetime),
                                         $DB->escape($message));
             }
-            
+
             if(empty($inserts)) {
                 success_message(1, 'Keine neuen CMS Fehlermeldungen!');
                 fclose($file_handle);
                 break;
             }
-            
+
             $query = sprintf("INSERT INTO `%ssys_errors` (`date`, `message`) VALUES %s",
                                     DB_PRE, implode(', ', $inserts));
-            
+
             if($DB->execute($query)) {
                 ftruncate($file_handle, 0);
                 success_message(1, 'CMS Logdatei erfolgreich eingelesen!');
@@ -74,11 +74,11 @@ if(!empty($_GET['load'])) {
             if(!$file_handle) {
                 success_message(0, 'PHP Logdatei konnte nicht geöffnet werden!');
             }
-            
+
             $lines = array();
             $count = 0;
             $last_real_insert = -1;
-            
+
             while(($current_line = fgets($file_handle)) !== false) {
                 if(substr($current_line, 0, 1) === '[') {
                     $lines[$count] = $current_line;
@@ -90,39 +90,39 @@ if(!empty($_GET['load'])) {
                     }
                 }
             }
-            
+
             $inserts = array();
-            
+
             foreach($lines AS $current_line) {
                 $current_line = str_replace("\r\n", "\n", $current_line);
-                
+
                 $time = trim(substr($current_line, 1, 20));
                 $message = trim(substr($current_line, 23));
-                
+
                 $time_search = array('Jan', 'Feb', 'Mar', 'Apr', 'May',
                                         'Jun', 'Jul', 'Aug', 'Sep',
                                         'Oct', 'Nov', 'Dec');
                 $time_replace = array('01', '02', '03', '04', '05', '06',
                                         '07', '08', '09', '10', '11', '12');
                 $mysql_datetime = str_replace($time_search, $time_replace, $time);
-                
+
                 $mysql_datetime = preg_replace('#([0-9]{2})-([0-9]{2})-([0-9]{4})#i',
                                                 '\3-\2-\1', $mysql_datetime);
-                
+
                 $inserts[] = sprintf("('%s', '%s')",
                                         $DB->escape($mysql_datetime),
                                         $DB->escape($message));
             }
-            
+
             if(empty($inserts)) {
                 success_message(1, 'Keine neuen PHP Fehlermeldungen!');
                 fclose($file_handle);
                 break;
             }
-            
+
             $query = sprintf("INSERT INTO `%ssys_errors` (`date`, `message`) VALUES %s",
                                     DB_PRE, implode(', ', $inserts));
-            
+
             if($DB->execute($query)) {
                 ftruncate($file_handle, 0);
                 success_message(1, 'PHP Logdatei erfolgreich eingelesen!');
@@ -137,7 +137,7 @@ if(!empty($_GET['load'])) {
 if(!empty($_POST['errors'])) {
     $query = sprintf('DELETE FROM `%ssys_errors` WHERE `id` IN (%s)',
                         DB_PRE, $DB->escape(implode(', ', $_POST['errors'])));
-    
+
     if($DB->execute($query)) {
         success_message(1, 'Einträge erfolgreich gelöscht!');
     } else {
@@ -147,7 +147,7 @@ if(!empty($_POST['errors'])) {
 
 if(isset($_POST['delete_all'])) {
     $query = sprintf('DELETE FROM `%ssys_errors`', DB_PRE);
-    
+
     if($DB->execute($query)) {
         success_message(1, 'Alle Einträge erfolgreich gelöscht!');
     } else {

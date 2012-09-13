@@ -35,8 +35,8 @@ if(!defined('SCMS')) {
 //Thanks to Dustin - php.net comment
 function getDirectoryTree($outerDir, $onlyDirs = false, $filters = array()) {
     $dirs = array_diff(scandir($outerDir), array_merge(array( ".", ".." ), $filters));
-    $dir_array = array();        
-    $file_array = array();        
+    $dir_array = array();
+    $file_array = array();
     foreach( $dirs AS $d ) {
         if(is_dir($outerDir."/".$d)) {
             $dir_array[$d] = getDirectoryTree($outerDir."/".$d, $onlyDirs, $filters);
@@ -95,34 +95,34 @@ function printFolderList(array $array, $valueToSelect = '', $path = '', $depth =
 
 function getIcon($extension = '') {
     $extension = trim(strtolower($extension));
-    
+
     if(in_array($extension, array('mp3', 'wav', 'ogg', 'wma', 'flac', 'aac', 'rm', 'mka')))
         return 'audio.png';
-    
+
     if(in_array($extension, array('pdf', 'xps', 'tex', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pps', 'ppsx', 'ods', 'odt', 'odp', 'rtf')))
         return 'document.png';
-    
+
     if(in_array($extension, array('exe', 'cmd', 'bat', 'sh', 'dll', 'so')))
         return 'exe.png';
-    
+
     if(in_array($extension, array('~folder')))
         return 'folder.png';
-    
+
     if(in_array($extension, array('bmp', 'png', 'gif', 'jpg', 'tiff', 'ico', 'jpeg')))
         return 'image.png';
-    
+
     if(in_array($extension, array('zip', '7z', 'rar', 'gz')))
         return 'pack.png';
-    
+
     if(in_array($extension, array('txt')))
         return 'text.png';
-        
+
     if(in_array($extension, array('mpg', 'mpeg', 'avi', 'mp4', 'wmv', 'rm', 'mkv', 'mov', 'hdmov', 'webm', 'flv', 'swf', 'divx')))
         return 'video.png';
-    
+
     if(in_array($extension, array('html', 'htm', 'php', 'php3', 'php4', 'php5', 'php6', 'xml', 'css', 'asp', 'js', 'rhtml', 'rjs', 'shtml', 'shtm')))
         return 'web.png';
-    
+
     if(in_array($extension, array('')))
         return 'unknown.png';
 
@@ -137,12 +137,12 @@ function convert($size){
 
 if(isset($_GET['id'])) {
     $page_id = $_GET['id'];
-    
+
     if($page_id == 0) {
         success_message(0, 'Sie haben keine Berechtigung, auf diese Dateien zuzugreifen!');
         return false;
     }
-    
+
     if(!isset($_SESSION['admin_allowedIds'])) {
         success_message(0, 'Bitte erst einmal \'Seiten verwalten\' aufrufen!');
         return false;
@@ -185,7 +185,7 @@ if(isset($_GET['action'])) {
                 $uploadDir = str_replace('d/Rootverzeichnis', '.', $uploadDir);
                 $uploadDir = str_replace('..', '', $uploadDir); //Prevent attacs!
                 $uploadDir = '../'.DIR_FILES.$folder.'/'.$uploadDir;
-                
+
                 $uploadFile = $uploadDir.'/'.$_FILES['fileUpload']['name'];
                 $messageFile = $_FILES['fileUpload']['name'];
                 $count = 1;
@@ -224,7 +224,7 @@ if(isset($_GET['action'])) {
                 }
             }
             break;
-        
+
         case 'delete':
             if(!empty($_POST['filesDelete'])) {
                 foreach($_POST['filesDelete'] AS $file) {
@@ -250,16 +250,16 @@ if(isset($_GET['action'])) {
                 }
             }
             break;
-        
+
         case 'createFolder':
             if(!empty($_POST['folderName']) && !empty($_POST['pathFolder'])) {
                 $folderParent = str_replace('d/Rootverzeichnis', '.', $_POST['pathFolder']);
                 $folderParent = str_replace('..', '', $folderParent); //Prevent attacs!
                 $folderParent = '../'.DIR_FILES.$folder.'/'.$folderParent;
-                
+
                 $folderNew = $_POST['folderName'];
                 $folderNew = str_replace('/', '', $folderNew);
-                
+
                 $folderCreate = $folderParent.'/'.$folderNew;
                 if(!is_dir($folderCreate)) {
                     if(@mkdir($folderCreate)) {
@@ -272,33 +272,33 @@ if(isset($_GET['action'])) {
                 }
             }
             break;
-        
+
         case 'rename':
             $showRenameForm = true;
             break;
-        
+
         case 'move':
             $showMoveForm = true;
             break;
-        
+
         case 'doRename':
             $oldFileName = substr($_GET['file'], 2);
             $newFileName = pathinfo($oldFileName, PATHINFO_DIRNAME).'/'.str_replace('/', '', $_POST['renameNewName']);
             $oldFileName = '../'.DIR_FILES.$folder.'/'.str_replace('..', '', $oldFileName);
             $newFileName = '../'.DIR_FILES.$folder.'/'.str_replace('..', '', $newFileName);
-            
+
             if(is_file($newFileName) || is_dir($newFileName)) {
                 success_message(0, '"'.htmlspecialchars(basename(substr($_GET['file'], 2))).'" existiert bereits!');
                 break;
             }
-            
+
             if(rename($oldFileName, $newFileName)) {
                 success_message(1, '"'.htmlspecialchars(basename(substr($_GET['file'], 2))).'" wurde erfolgreich in "'.htmlspecialchars($_POST['renameNewName']).'" umbenannt.');
             } else {
                 success_message(0, 'Fehler beim Umbenennen von "'.htmlspecialchars(basename(substr($_GET['file'], 2))).'" in "'.htmlspecialchars($_POST['renameNewName']).'"!');
             }
             break;
-        
+
         case 'doMove':
             $oldFileName = substr($_GET['file'], 2);
             $newFileName = str_replace('d/Rootverzeichnis', '.', $_POST['moveNewName']).'/'.basename($oldFileName);
@@ -306,12 +306,12 @@ if(isset($_GET['action'])) {
             $oldFileName = '../'.DIR_FILES.$folder.'/'.str_replace('..', '', $oldFileName);
             $newFileName = '../'.DIR_FILES.$folder.'/'.str_replace('..', '', $newFileName);
             //echo $oldFileName.'<br />'.$newFileName;
-            
+
             if(is_file($newFileName)) {
                 success_message(0, '"'.htmlspecialchars(substr($_GET['file'], 2)).'" existiert bereits!');
                 break;
             }
-            
+
             if(rename($oldFileName, $newFileName)) {
                 success_message(1, '"'.htmlspecialchars(substr($_GET['file'], 2)).'" wurde erfolgreich nach "'.htmlspecialchars($messageInfo).'" verschoben.');
             } else {

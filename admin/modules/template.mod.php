@@ -49,7 +49,7 @@ $dir_handle = opendir($dir_template);
 while(false !== ($dir_entry = readdir($dir_handle))) {
     if($dir_entry === '.' || $dir_entry === '..')
         continue;
-    
+
     $name = null;
     $version = null;
     $screenshot = null;
@@ -58,10 +58,10 @@ while(false !== ($dir_entry = readdir($dir_handle))) {
     $notes = null;
     $licence = null;
     $licence_url = null;
-    
+
     if(file_exists($dir_template.$dir_entry.'/info.xml')) {
         $xml = simplexml_load_file($dir_template.$dir_entry.'/info.xml');
-        
+
         $name = $xml->name;
         $version = $xml->version;
         $screenshot = $xml->screenshot;
@@ -71,7 +71,7 @@ while(false !== ($dir_entry = readdir($dir_handle))) {
         $licence = $xml->licence;
         $licence_url = $xml->licence['url'];
     }
-    
+
     if(empty($name)) $name = $dir_entry;
     if(empty($version)) $version = false;
     if(empty($screenshot)) $screenshot = false;
@@ -80,27 +80,27 @@ while(false !== ($dir_entry = readdir($dir_handle))) {
     if(empty($notes)) $notes = false;
     if(empty($licence)) $licence = 'k.A.';
     if(empty($licence_url)) $licence_url = false;
-    
+
     echo '<div style="clear:right; margin-bottom: 15px;">'.LF;
-    
+
     printf('<img style="%s" alt="Screenshot of %s Template" src="%s" />'.LF,
             'float: right; margin-bottom: 15px;',
             ($screenshot === false) ? 'Placeholder. Ignore!' : htmlspecialchars($name),
             ($screenshot === false) ? 'media/no_screenshot.png' :
                 $dir_template.$dir_entry.'/'.$screenshot);
-    
+
     printf('<h3>%s %s<small>(%s)</small></h3>'.LF,
             $name,
             $version ? $version.' ' : '',
             ($current_template === $dir_entry) ? 'Standard' :
                 '<a href="'.make_link(1, 'set='.$dir_entry).'">als Standard</a>');
-    
+
     printf('<p><small>von %s für StrigelCMS Version %s (Lizenz: '.
                 '%s)</small></p><p>%s</p>'.LF,
             htmlspecialchars($author), $forversion,
             (false === $licence_url) ? $licence : '<a href="'.$licence_url.'">'.$licence.'</a>',
             (false === $notes) ? '' : '<br />'.htmlspecialchars($notes));
-    
+
     echo '</div>'.LF;
 }
 

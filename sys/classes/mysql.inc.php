@@ -42,15 +42,15 @@ class mysql
 	protected $user;
 	protected $pw;
 	protected $database;
-	
+
 	protected $connection;
 	protected $connected = false;
 	protected $query_count = 0;
 	protected $time = 0.0;
-	
+
 	protected $error_list = array();
 	protected $error = false;
-	
+
 	public function __construct($host = null, $user = null, $pw = null, $database = null)
 	{
 		if(isset($host, $user, $pw, $database)) {
@@ -59,34 +59,34 @@ class mysql
 			}
 		}
 	}
-	
+
 	public function __destruct()
 	{
         if($this->error) {
             logit('class/db/destructor', implode(" - ", $this->error_list));
         }
 	}
-	
+
 	public function set_connection_parameters($host, $user, $pw, $database = null)
 	{
 		if(isset($host, $user, $pw)) {
 			$this->host = $host;
 			$this->user = $user;
 			$this->pw = $pw;
-			
+
 			if($database) {
 				if($this->set_database($database))
 					return true;
 				else
 					return false;
-				
+
 			}
 		} else {
 			$this->log_error("Not all parameters for database connection connection given.");
 			return false;
 		}
 	}
-	
+
 	public function set_database($database)
 	{
 		if($database) {
@@ -94,17 +94,17 @@ class mysql
 			return true;
 		}
 	}
-	
+
 	public function connect()
 	{
 		if($this->connected) {
 			$this->log_error("connect(): A connection has already been established.");
 			return false;
 		}
-		
+
 		if(isset($this->host, $this->user, $this->pw, $this->database)) {
 			$this->connection = @mysql_connect($this->host, $this->user, $this->pw);
-			
+
 			if($this->connection === false) {
 				$this->log_error("Connecting to database failed:\n".mysql_errno().":".mysql_error());
 				return false;
@@ -122,7 +122,7 @@ class mysql
 			return false;
 		}
 	}
-		
+
 	private function log_error($string)
 	{
 		if($string) {
@@ -130,7 +130,7 @@ class mysql
 			$this->error = true;
 		}
 	}
-	
+
 	public function get_last_error()
 	{
 		if(isset($this->error_list[count($this->error_list) - 1])) {
@@ -139,7 +139,7 @@ class mysql
             return false;
         }
 	}
-	
+
 	public function get_all_error()
 	{
         if(empty($this->error_list)) {
@@ -148,30 +148,30 @@ class mysql
             return $this->error_list;
         }
 	}
-	
+
 	public function connected()
 	{
         return $this->connected;
 	}
-	
+
 	public function query($query)
 	{
 		if($this->connected == false) {
 			$this->log_error("Please connect to a database before doing a query.");
 			return false;
 		}
-		
+
 		$this->query_count++;
 		return new mysql_do_query($query, $this->connection, $this);
 	}
-	
+
 	public function qquery($query, $method = '')
 	{
 		if($this->connected == false) {
 			$this->log_error("Please connect to a database before doing a query.");
 			return false;
 		}
-		
+
 		$this->query_count++;
 		$q = new mysql_do_query($query, $this->connection, $this);
 		if(!$q->success())
@@ -180,30 +180,30 @@ class mysql
 			$result = $q->fetch($method);
 		else
 			$result = $q->fetch();
-		
+
 		$q = null;
 		return $result;
 	}
-	
+
 	public function execute($query)
 	{
 		if($this->connected == false) {
 			$this->log_error("Please connect to a database before doing a query.");
 			return false;
 		}
-		
+
 		$this->query_count++;
 		$q = new mysql_do_query($query, $this->connection, $this);
 		$succ = $q->success();
 		$q = null;
 		return $succ;
 	}
-	
+
 	public function get_count()
 	{
 		return $this->query_count;
 	}
-	
+
 	public function status()
 	{
 		if($this->connected)
@@ -211,33 +211,33 @@ class mysql
 		else
 			return false;
 	}
-	
+
 	public function escape($string)
 	{
 		return mysql_real_escape_string($string, $this->connection);
 	}
-	
+
 	public function affected_rows()
 	{
 		return mysql_affected_rows($this->connection);
 	}
-	
+
 	public function insert_id()
 	{
 		return mysql_insert_id($this->connection);
 	}
-	
+
 	public function error()
 	{
 		return $this->error;
 	}
-	
+
 	public function add_time($time)
 	{
         $this->time += $time;
         return true;
 	}
-	
+
 	public function get_time()
 	{
         return round($this->time, 4);
@@ -251,14 +251,14 @@ class mysql_do_query
 	private $connection;
 	private $successed = false;
 	private $time = 0.0;
-	
+
 	private $error_list = array();
 	private $error = false;
-	
+
 	public function __construct($query, &$connection, &$mysql)
 	{
         $time = microtime(true);
-        
+
 		if($query && $connection) {
             $this->mysql = &$mysql;
 			$this->connection = &$connection;
@@ -268,32 +268,32 @@ class mysql_do_query
 			$this->successed = false;
 			return false;
 		}
-		
+
 		if(!$this->result_handler) {
 			$this->log_error("Query (".$query.") failed:\n".mysql_errno($this->connection).":".mysql_error($this->connection));
 			$this->successed = false;
 			return false;
 		}
-		
+
 		$this->successed = true;
 
 		$this->mysql->add_time(round(microtime(true)-$time, 5));
-		
+
 		return true;
 	}
-	
+
 	public function __destruct()
 	{
         if($this->error) {
             logit('class/do_query/destructor', implode(" - ", $this->error_list));
         }
 	}
-	
+
 	public function success()
 	{
 		return $this->successed;
 	}
-	
+
 	public function fetch($method = 40)
 	{
 		switch($method) {
@@ -315,7 +315,7 @@ class mysql_do_query
 				break;
 		}
 	}
-	
+
 	public function num_rows()
 	{
 		if($this->result_handler)
@@ -323,7 +323,7 @@ class mysql_do_query
 		else
 			return false;
 	}
-	
+
 	public function num_fields()
 	{
 		if($this->result_handler)
@@ -331,12 +331,12 @@ class mysql_do_query
 		else
 			return false;
 	}
-	
+
 	public function affected_rows()
 	{
 		return mysql_affected_rows($this->connection);
 	}
-	
+
 	private function log_error($string)
 	{
 		if($string) {
@@ -344,7 +344,7 @@ class mysql_do_query
 			$this->error = true;
 		}
 	}
-	
+
 	public function get_last_error()
 	{
 		if(isset($this->error_list[count($this->error_list) - 1])) {
@@ -353,7 +353,7 @@ class mysql_do_query
             return false;
         }
 	}
-	
+
 	public function get_all_error()
 	{
         if(empty($this->error_list)) {
@@ -362,7 +362,7 @@ class mysql_do_query
             return $this->error_list;
         }
 	}
-	
+
 	public function error()
 	{
 		return $this->error;

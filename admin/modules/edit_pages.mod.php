@@ -35,7 +35,7 @@ $edit_form_data = array();
 if((!empty($_GET['action'])) && (isset($_GET['id']))) {
     $edit_action = $_GET['action'];
     $edit_id = $_GET['id'];
-    
+
     if(!isset($_SESSION['admin_allowedIds'])) {
         success_message(0, 'Bitte erst \'Seiten verwalten\' aufrufen!');
         return false;
@@ -44,7 +44,7 @@ if((!empty($_GET['action'])) && (isset($_GET['id']))) {
         success_message(0, 'Sie haben keine Berechtigung, diese Seite zu bearbeiten!');
         return false;
     }
-    
+
     $edit_set = true;
 } else {
     $edit_set = false;
@@ -59,7 +59,7 @@ if(isset($_POST['page_submit'])) {
        isset($_POST['page_m_sort'])) {
         if(!empty($_POST['page_'.$_POST['page_content_type']])) {
             $sets = array();
-            
+
             $sets[] = '`date` = NOW()';
             $sets[] = '`title` = \''.$DB->escape($_POST['page_name']).'\'';
             $sets[] = '`link` = \''.$DB->escape($_POST['page_link']).'\'';
@@ -84,10 +84,10 @@ if(isset($_POST['page_submit'])) {
                                             ? $_POST['page_name'] : $_POST['page_m_title'])).'\'';
             $sets[] = '`m_sort` = '.$DB->escape((empty($_POST['page_m_sort']) OR !is_numeric($_POST['page_m_sort']))
                                             ? 10 : $_POST['page_m_sort']);
-            
+
             $query_insert = "INSERT INTO `".DB_PRE."sys_content` SET %s";
             $query_update = "UPDATE `".DB_PRE."sys_content` SET %s WHERE `id`=%s";
-                    
+
             if('edit' === $_POST['page_type']) {
                 $query = sprintf($query_update, implode(', ', $sets), $DB->escape($_POST['page_id']));
             } else if('new' === $_POST['page_type']) {
@@ -95,10 +95,10 @@ if(isset($_POST['page_submit'])) {
                                             ? 0 : $DB->escape($_POST['page_id']));
                 $query = sprintf($query_insert, implode(', ', $sets));
             }
-            
+
             //Clean up (empty strings -> NULL)
             $query = str_replace("` = '',", "` = NULL,", $query);
-            
+
             if($DB->execute($query)) {
                 success_message(1, "Die Seite wurde erfolgreich gespeichert!");
                 if('new' === $_POST['page_type']) {
@@ -134,12 +134,12 @@ if($edit_set && ('edit' === $edit_action)) {
               WHERE `id` = ".$DB->escape($edit_id);
 
     $result = $DB->qquery($query);
-    
+
     if(!$result) {
         success_message(0, 'Seite existiert nicht oder Fehler beim Abruf der Seite. (s. DB-Log)');
         return 1;
     }
-    
+
     $edit_form_data['name'] = $result->name;
     $edit_form_data['link'] = $result->link;
     $edit_form_data['m_active'] = $result->m_active;
@@ -157,7 +157,7 @@ if($edit_set && ('edit' === $edit_action)) {
     $edit_form_data['js'] = $result->js;
     $edit_form_data['language'] = $result->language;
     $edit_form_data['author'] = $result->author;
-    
+
     $edit_form_data['type'] = 'edit';
     $edit_form_data['id'] = $edit_id;
 
@@ -182,7 +182,7 @@ if($edit_set && ('edit' === $edit_action)) {
     $edit_form_data['js'] = '';
     $edit_form_data['language'] = 'de-de';
     $edit_form_data['author'] = '';
-    
+
     $edit_form_data['type'] = 'new';
     $edit_form_data['id'] = $edit_id;
 
