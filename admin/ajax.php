@@ -107,7 +107,7 @@ function getImageList($dir, $subdir = '/') {
             continue;
         }
         $ext = pathinfo($file, PATHINFO_EXTENSION);
-        if(in_array(strtolower($ext), array('jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff')))
+        if(in_array(strtolower($ext), array('jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'svg')))
             $images[] =  $subdir.$file;
     }
 
