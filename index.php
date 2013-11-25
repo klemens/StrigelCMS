@@ -58,10 +58,6 @@ define('DIR_WORK', str_replace('\\', '/', getcwd()).'/');
 $timeStart = microtime(true);
 //--
 
-//Session
-session_start();
-//--
-
 //Header
 header('Content-Type: text/html; charset=UTF-8');
 //--
