@@ -136,7 +136,7 @@ if(!empty($_GET['load'])) {
 
 if(!empty($_POST['errors'])) {
     $query = sprintf('DELETE FROM `%ssys_errors` WHERE `id` IN (%s)',
-                        DB_PRE, $DB->escape(implode(', ', $_POST['errors'])));
+                        DB_PRE, implode(', ', array_map('intval', $_POST['errors'])));
 
     if($DB->execute($query)) {
         success_message(1, 'Einträge erfolgreich gelöscht!');
@@ -168,8 +168,8 @@ echo '<h2>Fehlermeldungen</h2>'.LF;
 $error_count = $DB->qquery("SELECT count(`id`) AS `count` FROM `".DB_PRE."sys_errors`")->count;
 
 if(!empty($_GET['limit'])) {
-    if($error_count > $_GET['limit']) {
-        $query_limit = $_GET['limit'];
+    if($error_count > intval($_GET['limit']) && 0 <= intval($_GET['limit'])) {
+        $query_limit = intval($_GET['limit']);
     } else {
         $query_limit = 0;
     }
@@ -180,7 +180,7 @@ if(!empty($_GET['limit'])) {
 $query = sprintf("SELECT DATE_FORMAT(`date`, '%%d.%%m.%%Y %%H:%%i') AS `datef`,
                     `id`, `date`, `message` FROM `%ssys_errors`
                     ORDER BY `date` DESC, `id` DESC LIMIT %d, 20",
-                    DB_PRE, $DB->escape($query_limit));
+                    DB_PRE, $query_limit);
 
 $q = $DB->query($query);
 

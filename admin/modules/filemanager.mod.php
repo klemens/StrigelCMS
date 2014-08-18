@@ -156,7 +156,7 @@ if(isset($_GET['id'])) {
     return false;
 }
 
-$folder = $DB->qquery("SELECT `files` FROM `".DB_PRE."sys_content` WHERE `id` = ".$DB->escape($page_id))->files;
+$folder = $DB->qquery("SELECT `files` FROM `".DB_PRE."sys_content` WHERE `id` = ".intval($page_id))->files;
 
 if(empty($folder)) {
     success_message(2, 'Bitte zuerst bei den Seiteneinstellungen einen Ordner eintragen!');

@@ -76,7 +76,7 @@ class content
         $time_format = ($time_format = $this->config->get('sys', 'time_format')) ? $time_format : '%k:%i';
 
         $query = "SELECT `id`, `title`, `link`, `file`, `content`, `author`, `description`, `keywords`, `css`, `js`, UNIX_TIMESTAMP(`date`) AS `timestamp`, `lang`, `files`,
-                 DATE_FORMAT(`date`, '".$date_format."') AS `date`, DATE_FORMAT(`date`, '".$time_format."') AS `time`, `redirect`, `content_type`, `robot_visibility`, `header_image`
+                 DATE_FORMAT(`date`, '".$this->database->escape($date_format)."') AS `date`, DATE_FORMAT(`date`, '".$this->database->escape($time_format)."') AS `time`, `redirect`, `content_type`, `robot_visibility`, `header_image`
                  FROM ".DB_PRE."sys_content
                  WHERE `link` = '".$this->database->escape($link)."'
                  LIMIT 1";

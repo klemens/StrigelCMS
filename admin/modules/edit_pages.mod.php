@@ -82,17 +82,15 @@ if(isset($_POST['page_submit'])) {
             $sets[] = '`m_active` = '.(isset($_POST['page_m_active']) ? 1 : 0);
             $sets[] = '`m_title` = \''.$DB->escape((empty($_POST['page_m_title'])
                                             ? $_POST['page_name'] : $_POST['page_m_title'])).'\'';
-            $sets[] = '`m_sort` = '.$DB->escape((empty($_POST['page_m_sort']) OR !is_numeric($_POST['page_m_sort']))
-                                            ? 10 : $_POST['page_m_sort']);
+            $sets[] = '`m_sort` = '.(empty($_POST['page_m_sort']) ? 10 : intval($_POST['page_m_sort']));
 
             $query_insert = "INSERT INTO `".DB_PRE."sys_content` SET %s";
             $query_update = "UPDATE `".DB_PRE."sys_content` SET %s WHERE `id`=%s";
 
             if('edit' === $_POST['page_type']) {
-                $query = sprintf($query_update, implode(', ', $sets), $DB->escape($_POST['page_id']));
+                $query = sprintf($query_update, implode(', ', $sets), intval($_POST['page_id']));
             } else if('new' === $_POST['page_type']) {
-                $sets[] = '`m_pid` = '.((empty($_POST['page_id']) OR !is_numeric($_POST['page_id']))
-                                            ? 0 : $DB->escape($_POST['page_id']));
+                $sets[] = '`m_pid` = '.(empty($_POST['page_id']) ? 0 : intval($_POST['page_id']));
                 $query = sprintf($query_insert, implode(', ', $sets));
             }
 
@@ -131,7 +129,7 @@ if($edit_set && ('edit' === $edit_action)) {
                      `files` AS `include`, `lang` AS `language`, `m_title`, `m_active`, `m_sort`,
                      `robot_visibility`, `header_image`, `showEditor`
               FROM `".DB_PRE."sys_content`
-              WHERE `id` = ".$DB->escape($edit_id);
+              WHERE `id` = ".intval($edit_id);
 
     $result = $DB->qquery($query);
 

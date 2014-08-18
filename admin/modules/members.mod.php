@@ -98,8 +98,8 @@ if(!empty($_GET['action']) && isset($_GET['id'])) {
 $error_count = $DB->qquery("SELECT count(`id`) AS `count` FROM `".DB_PRE."sys_user`")->count;
 
 if(!empty($_GET['limit'])) {
-    if($error_count > $_GET['limit']) {
-        $query_limit = $_GET['limit'];
+    if($error_count > intval($_GET['limit']) && 0 <= intval($_GET['limit'])) {
+        $query_limit = intval($_GET['limit']);
     } else {
         $query_limit = 0;
     }

@@ -66,7 +66,7 @@ if(!empty($_GET['action'])) {
 
         case 'delete2':
             if($DB->execute(sprintf("DELETE FROM %ssys_content WHERE `id` = %s LIMIT 1",
-                                        DB_PRE, $DB->escape($_GET['id'])))) {
+                                        DB_PRE, intval($_GET['id'])))) {
                 success_message(1, sprintf('"%s" erfolgreich gelöscht!',
                                             $menu->getRealTitleById($_GET['id'])));
             } else {

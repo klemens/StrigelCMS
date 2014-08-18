@@ -449,8 +449,8 @@ class menu
         }
 
         $query = "UPDATE `".DB_PRE."sys_content`
-                  SET `m_pid` = ".$this->database->escape($destination)."
-                  WHERE `id` = ".$this->database->escape($node)."
+                  SET `m_pid` = ".intval($destination)."
+                  WHERE `id` = ".intval($node)."
                   LIMIT 1";
 
         $success = $this->database->execute($query);
