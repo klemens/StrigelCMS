@@ -149,7 +149,6 @@ class user
         $this->loggedIn = true;
         $this->userInformation = $r;
 
-        session_regenerate_id(true);
         $_SESSION['loggedIn'] = true;
         $_SESSION['userID'] = $r['id'];
         $_SESSION['userName'] = $r['username'];
