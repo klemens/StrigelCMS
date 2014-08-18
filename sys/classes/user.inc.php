@@ -165,7 +165,7 @@ class user
             return false;
 
         $q = $this->DB->query(sprintf("SELECT `userID` FROM `%ssys_autologin` WHERE `uniqid` = '%s' AND `expire` > UNIX_TIMESTAMP()",
-                                      DB_PRE, $_COOKIE['autologin']));
+                                      DB_PRE, $this->DB->escape($_COOKIE['autologin'])));
 
         if(0 === $q->num_rows()) {
             $q = null;
@@ -200,7 +200,7 @@ class user
     {
         if(!empty($_COOKIE['autologin'])) {
             $this->DB->execute(sprintf("DELETE FROM `%ssys_autologin` WHERE (`userID` = %s AND `uniqid` = '%s') OR (`expire` < UNIX_TIMESTAMP())",
-                                       DB_PRE, $this->userInformation['id'], $_COOKIE['autologin']));
+                                       DB_PRE, $this->userInformation['id'], $this->DB->escape($_COOKIE['autologin'])));
             setcookie('autologin', '', time() - 3600*25, parse_url(SCRIPT, PHP_URL_PATH), '', false, true);
         }
 
