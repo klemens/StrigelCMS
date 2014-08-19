@@ -214,7 +214,7 @@ $defModules = array(
         'filemanager'        => array(
             'name'          => 'Dateimanager',
             'file'          => 'filemanager.mod.php',
-            'description'   => 'Dateien einer Seite verwalten.',
+            'description'   => 'Dateien einer Seite verwalten.<br /><b style="color:red">Warnung:</b> Die Dateien werden beim Hochladen <i>nicht</i> weiter überprüft! Insbesondere können damit ausführbare Skripte hochgeladen werden, wenn nicht der Webserver das Ausführen von Skripten in <code>/resources/site_files</code> unterbindet.',
             'menuEntry'     => false
         ),
         'news'      => array(

@@ -26,6 +26,17 @@ Features
  * Event-base plugin system which allows you to customise SCMS to your needs
  * Templates allow you to apply your own designs.
 
+Security
+--------
+
+_Note_: If you are using Apache, the following should already be handled by the
+included `.htaccess` files.
+
+ * You should make sure that your webserver does not execute scripts in
+   `/resources/site_files`, because uploaded files are not checked.
+ * Your webserver should not allow access to `/modules`, where user modules are
+   stored, and to `/admin/backup`, where sql dumps are stored.
+
 Licence
 -------
 
