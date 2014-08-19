@@ -65,7 +65,7 @@ if(isset($_POST['save'])) {
 	$post_rights = isset($_POST['rights']) ? $_POST['rights'] : array();
 
     foreach($post_rights AS $right) {
-        if('' !== $_POST['value_'.$right]) {
+        if(isset($_POST['value_'.$right]) && '' !== $_POST['value_'.$right]) {
             $rights_new[] = '('.$id.', \''.$DB->escape($right).'\', \''.$DB->escape($_POST['value_'.$right]).'\')';
         } else {
             $rights_new[] = '('.$id.', \''.$DB->escape($right).'\', NULL)';;
@@ -112,8 +112,6 @@ foreach($defModules_flat AS $module_do => $modul) {
     echo '<td>'.LF;
     if($module_do === 'pages')
         echo '<select name="value_admin_pages">'.printMenuTree(array(array('id' => '0', 'real_title' => 'Alle Seiten', 'child' => $menu->getMenu(0))), ((isset($user_rights['admin_'.$module_do]) && ('' !== $user_rights['admin_'.$module_do])) ? $user_rights['admin_'.$module_do] : '0')).'</select>';
-    else
-        echo '<input style="width: 100%;" type="text" value="'.((isset($user_rights['admin_'.$module_do]) && ('' !== $user_rights['admin_'.$module_do])) ? $user_rights['admin_'.$module_do] : '').'" name="value_admin_'.$module_do.'" />'.LF;
     echo '</td>'.LF;
     echo '</tr>'.LF;
 }
