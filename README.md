@@ -40,14 +40,11 @@ included `.htaccess` files.
 Licence
 -------
 
-StrigelCMS is licenced under [Creative Commons Attribution 3.0][1]. If you
-choose to fork or use parts of this project, it would be nice if you use a
-OpenSource licence.
+StrigelCMS is licenced under GPLv3.
 
-TinyMCE is licenced under GNU LESSER GENERAL PUBLIC LICENSE 2.1.
+TinyMCE is licenced under LGPLv2.1.
 
 The icons used in the backend are in public domain. (Thanks to the
-[Tango Desktop Project][2]!)
+[Tango Desktop Project][1]!)
 
-  [1]: http://creativecommons.org/licenses/by/3.0/
-  [2]: http://tango.freedesktop.org/
+  [1]: http://tango.freedesktop.org/
