@@ -86,28 +86,28 @@ while(false !== ($row = $q->fetch())) {
 $q = null;
 
 echo '<form method="post" action="'.make_link(2).'">'.LF;
-echo '<table>'.LF;
+echo '<table style="border-spacing: 0.7em">'.LF;
 echo '<tr>'.LF;
+echo '<th></th>'.LF;
 echo '<th>Modul</th>'.LF;
 echo '<th>Beschreibung</th>'.LF;
-echo '<th>Aktiviert</th>'.LF;
-echo '<th>Wert</th>'.LF;
+echo '<th>Einstellungen</th>'.LF;
 echo '</tr>'.LF;
 
 foreach($defModules_flat AS $module_do => $modul) {
     echo '<tr>'.LF;
-    echo '<td>'.LF;
-    echo $modul['name'];
-    echo '</td>'.LF;
-    echo '<td>'.LF;
-    echo $modul['description'];
-    echo '</td>'.LF;
     echo '<td align="right">'.LF;
     if(isset($user_rights['admin_'.$module_do])) {
-        echo '<input value="admin_'.$module_do.'" type="checkbox" name="rights[]" checked="checked"/>'.LF;
+        echo '<input id="check-'.$module_do.'" value="admin_'.$module_do.'" type="checkbox" name="rights[]" checked="checked"/>'.LF;
     } else {
-        echo '<input value="admin_'.$module_do.'" type="checkbox" name="rights[]" />'.LF;
+        echo '<input id="check-'.$module_do.'" value="admin_'.$module_do.'" type="checkbox" name="rights[]" />'.LF;
     }
+    echo '</td>'.LF;
+    echo '<td><label for="check-'.$module_do.'">'.LF;
+    echo $modul['name'];
+    echo '</label></td>'.LF;
+    echo '<td>'.LF;
+    echo $modul['description'];
     echo '</td>'.LF;
     echo '<td>'.LF;
     if($module_do === 'pages')
