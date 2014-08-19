@@ -33,7 +33,9 @@ if(!defined('SCMS')) {
 
 $move_arrow_action = false;
 $move_arrow_id = false;
-$_SESSION['admin_allowedIds'] = array();
+if(!isset($_SESSION['admin_allowedIds'])) {
+    $_SESSION['admin_allowedIds'] = array();
+}
 
 $menu = new menu($DB, $CONFIG, null);
 $root_id = $USER->getRightValue('admin_pages');
@@ -43,12 +45,27 @@ if(false === $root_id) {
     $root_id = -1;
 } else if('0' === $root_id){
     $root_id = 0;
-    $_SESSION['admin_allowedIds'][] = 0;
+    if(!in_array(0, $_SESSION['admin_allowedIds'])) {
+        $_SESSION['admin_allowedIds'][] = 0;
+    }
 } else {
     $root_id = intval($root_id);
 }
 
 if(!empty($_GET['action'])) {
+    if(!isset($_SESSION['admin_allowedIds'])) {
+        success_message(0, 'Sie haben keine ausreichende Berechtigung!');
+        return false;
+    }
+    if(isset($_GET['id']) && !in_array($_GET['id'], $_SESSION['admin_allowedIds'])) {
+        success_message(0, 'Sie haben keine Berechtigung, diese Seite zu bearbeiten!');
+        return false;
+    }
+    if(isset($_GET['pid']) && !in_array($_GET['pid'], $_SESSION['admin_allowedIds'])) {
+        success_message(0, 'Sie haben keine Berechtigung, auf Seiten außerhalb Ihres Bereiches zuzugreifen!');
+        return false;
+    }
+
     switch($_GET['action']) {
         case 'delete':
             if(false === $menu->hasChild($_GET['id'])) {
@@ -179,7 +196,9 @@ function admin_pages_show_tree($array, $move_arrow_action = false, $move_arrow_i
         }
 
         //for module edit_page and filemanger
-        $_SESSION['admin_allowedIds'][] = $entry['id'];
+        if(!in_array($entry['id'], $_SESSION['admin_allowedIds'])) {
+            $_SESSION['admin_allowedIds'][] = $entry['id'];
+        }
 
         if(!empty($entry['child'])) {
             admin_pages_show_tree($entry['child'], $move_arrow_action, $move_arrow_id, $show_arrow_sub);
