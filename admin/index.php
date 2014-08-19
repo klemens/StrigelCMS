@@ -216,12 +216,6 @@ $defModules = array(
             'file'          => 'filemanager.mod.php',
             'description'   => 'Dateien einer Seite verwalten.<br /><b style="color:red">Warnung:</b> Die Dateien werden beim Hochladen <i>nicht</i> weiter überprüft! Insbesondere können damit ausführbare Skripte hochgeladen werden, wenn nicht der Webserver das Ausführen von Skripten in <code>/resources/site_files</code> unterbindet.',
             'menuEntry'     => false
-        ),
-        'news'      => array(
-            'name'          => 'News',
-            'file'          => 'news.mod.php',
-            'description'   => 'Aktuelle Nachrichten bearbeiten.',
-            'menuEntry'     => false
         )
     ),
     'Layout'    => array(
@@ -253,12 +247,6 @@ $defModules = array(
         )
     ),
     'System'    => array(
-        'settings'  => array(
-            'name'          => 'Einstellungen',
-            'file'          => 'settings.mod.php',
-            'description'   => 'Allgemeine Einstellungen der Website bearbeiten.',
-            'menuEntry'     => false
-        ),
         '404'    => array(
             'name'          => '404-Fehler',
             'file'          => '404.mod.php',
