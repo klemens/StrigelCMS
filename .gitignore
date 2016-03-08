@@ -1,2 +1,3 @@
 settings.php
 /sys/log/*.log
+/vendor/

@@ -1,0 +1,13 @@
+{
+    "name": "klemens/strigel-cms",
+    "require": {
+        "doctrine/dbal": "^2.5"
+    },
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "Klemens Schölhorn",
+            "email": "klemens@schoelhorn.eu"
+        }
+    ]
+}
