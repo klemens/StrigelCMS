@@ -31,7 +31,7 @@ define('SCMS', 1);
 
 //Load basic settings
 if(!file_exists('settings.php') && is_dir('./install/')) {
-    header("Location: install");
+    header("Location: install/");
     die;
 } else {
     require_once('settings.php');
