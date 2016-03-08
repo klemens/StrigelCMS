@@ -88,19 +88,15 @@ if((function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc())
 
 //Load functions
 require_once(DIR_FUNC . 'all_functions.inc.php');
+require_once __DIR__ . "/vendor/autoload.php";
 //--
 
 //Instantiate Database
-$DB = new mysql(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
-if($DB->error()) {
-    logit('main/instantiate_database', 'Could not connect to Database! '.
-                                       'See db logs for more information!');
-    die('Heavy Database Error! Could not connect! Call Admin: '.ADMIN_MAIL);
-}
-//--
-
-//Set UTF-8 as encoding for DB connection
-$DB->execute("SET NAMES 'utf8'");
+$dbConfig = new \Doctrine\DBAL\Configuration();
+$DB = \Doctrine\DBAL\DriverManager::getConnection([
+    'url' => sprintf("mysql://%s:%s@%s/%s?charset=utf8",
+                     MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_DB)
+], $dbConfig);
 //--
 
 //Load Settings class
@@ -300,8 +296,6 @@ $tmp->setVar('menu', $html_menu);
 //Add generation time and version
 $tmp->setVar('scms_version', SCMS_VERSION);
 $tmp->setVar('gen_time', round((microtime(true)-$timeStart), 4));
-$tmp->setVar('db_query', $DB->get_count()-1);
-$tmp->setVar('db_time', round(100*$DB->get_time()/$timeStart, 1));
 //--
 
 //Add the final content

@@ -8,9 +8,18 @@ echo '<p>Bitte überprüfen Sie die Adresse auf eventuelle Tippfehler!</p>';
 
 $referrer = isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : '';
 
-if(!$DB->execute(sprintf("INSERT INTO `%ssys_404` SET `site` = '%s', `referer` = '%s', `time` = NOW()",
-                        DB_PRE, $DB->escape(implode('/', $URL->getParameter())), $DB->escape($referrer)))) {
+$query = $DB->createQueryBuilder()
+    ->insert(DB_PRE . "sys_404")
+    ->values([
+        "site" => ":site",
+        "referer" => ":referer",
+        "time" => "now()"
+    ])
+    ->setParameters([
+        ":site" => implode('/', $URL->getParameter()),
+        ":referer" => $referrer
+    ]);
+
+if($query->execute() === 0) {
     echo 'Fehler beim Eintragen in die Datenbank!';
 }
-
-?>

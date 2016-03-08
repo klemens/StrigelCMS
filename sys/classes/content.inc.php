@@ -72,16 +72,16 @@ class content
 
     public function loadSite($link)
     {
-        $date_format = ($date_format = $this->config->get('sys', 'date_format')) ? $date_format : '%Y/%m/%d';
-        $time_format = ($time_format = $this->config->get('sys', 'time_format')) ? $time_format : '%k:%i';
-
-        $query = "SELECT `id`, `title`, `link`, `file`, `content`, `author`, `description`, `keywords`, `css`, `js`, UNIX_TIMESTAMP(`date`) AS `timestamp`, `lang`, `files`,
-                 DATE_FORMAT(`date`, '".$this->database->escape($date_format)."') AS `date`, DATE_FORMAT(`date`, '".$this->database->escape($time_format)."') AS `time`, `redirect`, `content_type`, `robot_visibility`, `header_image`
-                 FROM ".DB_PRE."sys_content
-                 WHERE `link` = '".$this->database->escape($link)."'
-                 LIMIT 1";
-
-        $result = $this->database->qquery($query, SQL_ASSOC_ARRAY);
+		$result = $this->database->createQueryBuilder()
+			->select("id", "title", "link", "file", "content", "author", "lang",
+			         "description", "keywords", "css", "js", "files", "redirect",
+					 "content_type", "robot_visibility", "header_image")
+			->from(DB_PRE . "sys_content")
+			->where("link = ?")
+			->setMaxResults(1)
+			->setParameter(0, $link)
+			->execute()
+			->fetch();
 
         if(false === $result) {
             return false;
@@ -93,17 +93,24 @@ class content
         //Redirect if set
         if('redirect' === $this->information['type']) {
             if('first_child' === $result['redirect']) {
-                $redirect = $this->database->qquery("SELECT `link` FROM `".DB_PRE."sys_content`
-                                                    WHERE `m_pid` = ".$result['id']."
-                                                    ORDER BY `m_pid` ASC, `m_sort` ASC, `m_title` ASC
-                                                    LIMIT 1");
+                $redirect = $this->database->createQueryBuilder()
+                    ->select("link")
+                    ->from(DB_PRE . "sys_content")
+                    ->where("m_pid = ?")
+                    ->orderBy("m_pid", "ASC")
+                        ->addOrderBy("m_sort", "ASC")
+                        ->addOrderBy("m_title", "ASC")
+                    ->setMaxResults(1)
+                    ->setParameter(0, $result['id'])
+                    ->execute()
+                    ->fetch();
 
                 if(false === $redirect) {
                     logit('content/redirect', '(first_child) - entry has no childs!');
                     die('Error occured, call admin!');
                 }
 
-                $redirect = $redirect->link;
+                $redirect = $redirect['link'];
             } else {
                 $redirect = $result['redirect'];
             }
@@ -119,7 +126,6 @@ class content
 		$this->information['file']              = $result['file'];
 		$this->information['content']           = $result['content'];
 		$this->information['redirect']          = $result['redirect'];
-		$this->information['timestamp']         = $result['timestamp'];
         $this->information['author']            = $result['author'];
 		$this->information['robot_visibility']  = $result['robot_visibility'];
 		$this->information['description']       = $result['description'];
@@ -129,9 +135,6 @@ class content
 		$this->information['js']                = $result['js'];
 		$this->information['files']             = $result['files'];
 		$this->information['lang']              = $result['lang'];
-        //this cannnot be edited
-		$this->information['date']              = $result['date'];
-		$this->information['time']              = $result['time'];
 
 		$result = null;
 

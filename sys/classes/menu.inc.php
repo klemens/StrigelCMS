@@ -80,13 +80,16 @@ class menu
         //Protection from endless loop
         $last_insert_id = 0;
         //Get menu from database
-        $query = "SELECT `id`, `m_pid` AS `pid`, `m_title`, `title`,
-                    `link` AS `href`, `m_sort` AS `sort`, `m_active` AS `active`
-                    FROM `".DB_PRE."sys_content`
-                    ORDER BY `pid` ASC, `sort` ASC, `m_title` ASC";
+        $q = $this->database->createQueryBuilder()
+            ->select("id", "m_pid pid", "m_title", "title",
+                     "link href", "m_sort sort", "m_active active")
+            ->from(DB_PRE . "sys_content")
+            ->orderBy("pid", "ASC")
+            ->addOrderBy("sort", "ASC")
+            ->addOrderBy("m_title", "ASC")
+            ->execute();
 
-        $q = $this->database->query($query);
-        while(false !== ($row = $q->fetch(SQL_ASSOC_ARRAY)))
+        while($row = $q->fetch())
         {
             $this->flat_menu[] = $row;
         }
@@ -461,12 +464,16 @@ class menu
             return false;
         }
 
-        $query = "UPDATE `".DB_PRE."sys_content`
-                  SET `m_pid` = ".intval($destination)."
-                  WHERE `id` = ".intval($node)."
-                  LIMIT 1";
+        $query = $this->database->createQueryBuilder()
+            ->update(DB_PRE . "sys_content")
+            ->set("m_pid = :pid")
+            ->where("id = :id")
+            ->setParameters([
+                ":pid" => $destination,
+                ":id" => $node
+            ]);
 
-        $success = $this->database->execute($query);
+        $success = $query->execute() > 0;
 
         $this->_reloadMenu();
 

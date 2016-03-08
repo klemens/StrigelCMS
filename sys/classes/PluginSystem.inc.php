@@ -85,7 +85,7 @@ class NullEvent extends Event {
 }
 
 class ContainerEvent extends Event {
-    public function __construct(mysql $db, settings $config, url $url) {
+    public function __construct(Doctrine\DBAL\Connection $db, settings $config, url $url) {
         $this->db = $db;
         $this->config = $config;
         $this->url = $url;

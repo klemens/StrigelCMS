@@ -58,16 +58,19 @@ class settings
         }
         $this->loaded = true;
 
-        $q = $this->database->query("SELECT `section`, `value`, `name` FROM `".DB_PRE."sys_settings`");
+        $q = $this->database->createQueryBuilder()
+            ->select("section", "value", "name")
+            ->from(DB_PRE . "sys_settings")
+            ->execute();
 
-        if(0 == $q->num_rows()) {
-            logit("class/settings/_loadSettings", "Not Settings!");
+        if(0 == $q->rowCount()) {
+            logit("class/settings/_loadSettings", "No Settings!");
             $q = null;
             return true;
         }
 
-        while(false !== ($setting = $q->fetch())) {
-            $this->settings[trim($setting->section)][trim($setting->name)] = trim($setting->value);
+        while($setting = $q->fetch()) {
+            $this->settings[$setting['section']][$setting['name']] = $setting['value'];
         }
 
         $q = null;
@@ -97,12 +100,41 @@ class settings
             return false;
         }
 
-        $q = $this->database->query("SELECT value FROM ".DB_PRE."sys_settings WHERE section = '".$this->database->escape($section)."' AND name = '".$this->database->escape($name)."'");
+        $q = $this->database->createQueryBuilder()
+            ->select("value")
+            ->from(DB_PRE . "sys_settings")
+            ->where("section = :section")
+            ->andWhere("name = :name")
+            ->setParameters([
+                ":section" => $section,
+                ":name" => $name
+            ])
+            ->execute();
 
-        if($q->num_rows() == 0) {
-            $query = "INSERT INTO ".DB_PRE."sys_settings(name, section, value) VALUES('".$this->database->escape($name)."', '".$this->database->escape($section)."', '".$this->database->escape($value)."')";
-        } elseif($q->num_rows() == 1) {
-            $query = "UPDATE ".DB_PRE."sys_settings SET value = '".$this->database->escape($value)."' WHERE section = '".$this->database->escape($section)."' AND name = '".$this->database->escape($name)."'";
+        if($q->rowCount() == 0) {
+            $query = $this->database->createQueryBuilder()
+                ->insert(DB_PRE . "sys_settings")
+                ->values([
+                    "name" => ":name",
+                    "section" => ":section",
+                    "value" => ":value"
+                ])
+                ->setParameters([
+                    ":name" => $name,
+                    ":section" => $section,
+                    ":value" => $value
+                ]);
+        } elseif($q->rowCount() == 1) {
+            $query = $this->database->createQueryBuilder()
+                ->update(DB_PRE . "sys_settings")
+                ->set("value", ":value")
+                ->where("section = :section")
+                ->andWhere("name = :name")
+                ->setParameters([
+                    ":name" => $name,
+                    ":section" => $section,
+                    ":value" => $value
+                ]);
         } else {
             logit("class/settings/set", "Too many results!");
             die("Call Admin!");
@@ -110,7 +142,7 @@ class settings
 
         $q = null;
 
-        $success = $this->database->execute($query);
+        $success = $query->execute() > 0;
 
         if($success) {
             $this->settings[trim($section)][trim($name)] = $value;
@@ -126,11 +158,16 @@ class settings
             return false;
         }
 
-        $q = $this->database->query("DELETE FROM ".DB_PRE."sys_settings WHERE section = '".$this->database->escape($section)."' AND name = '".$this->database->escape($name)."' LIMIT 1");
+        $affected = $this->database->createQueryBuilder()
+            ->delete(DB_PRE . "sys_settings")
+            ->where("section = :section")
+            ->andWhere("name = :name")
+            ->setParameters([
+                ":name" => $name,
+                ":section" => $section
+            ])
+            ->execute();
 
-        $affected = $q->affected_rows();
-
-        $q = null;
 
         if(1 == $affected) {
             $this->settings[trim($section)][trim($name)] = null;
