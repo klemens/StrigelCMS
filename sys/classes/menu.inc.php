@@ -397,6 +397,19 @@ class menu
         }
     }
 
+    public function hasVisibleChild($id) {
+        if(isset($this->ref_data_by_id[$id])) {
+            foreach($this->ref_data_by_id[$id]['child'] AS $child) {
+                if($child['active'] == 1) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return null;
+        }
+    }
+
     public function isChildIf($child, $parent)
     {
         return $this->_isChildOf($child, $parent);
