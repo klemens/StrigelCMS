@@ -103,19 +103,14 @@ class mysql
 		}
 
 		if(isset($this->host, $this->user, $this->pw, $this->database)) {
-			$this->connection = @mysql_connect($this->host, $this->user, $this->pw);
+			$this->connection = mysqli_connect($this->host, $this->user, $this->pw, $this->database);
 
 			if($this->connection === false) {
-				$this->log_error("Connecting to database failed:\n".mysql_errno().":".mysql_error());
+				$this->log_error("Connecting to database failed:\n".mysqli_connect_errno().":".mysqli_connect_error());
 				return false;
 			} else {
-				if(mysql_select_db($this->database, $this->connection)) {
-					$this->connected = true;
-					return true;
-				} else {
-					$this->log_error("Could not select database. Wrong name?");
-					return false;
-				}
+				$this->connected = true;
+				return true;
 			}
 		} else {
 			$this->log_error("Please define host, user, pw and database before connecting.");
@@ -207,24 +202,24 @@ class mysql
 	public function status()
 	{
 		if($this->connected)
-			return mysql_stat($this->connection);
+			return mysqli_stat($this->connection);
 		else
 			return false;
 	}
 
 	public function escape($string)
 	{
-		return mysql_real_escape_string($string, $this->connection);
+		return mysqli_real_escape_string($this->connection, $string);
 	}
 
 	public function affected_rows()
 	{
-		return mysql_affected_rows($this->connection);
+		return mysqli_affected_rows($this->connection);
 	}
 
 	public function insert_id()
 	{
-		return mysql_insert_id($this->connection);
+		return mysqli_insert_id($this->connection);
 	}
 
 	public function error()
@@ -262,7 +257,7 @@ class mysql_do_query
 		if($query && $connection) {
             $this->mysql = &$mysql;
 			$this->connection = &$connection;
-			$this->result_handler = @mysql_query($query, $this->connection);
+			$this->result_handler = mysqli_query($this->connection, $query);
 		} else {
 			$this->log_error("Error with Query or MySQL connection.\nSee logs of connection class for more information");
 			$this->successed = false;
@@ -270,7 +265,7 @@ class mysql_do_query
 		}
 
 		if(!$this->result_handler) {
-			$this->log_error("Query (".$query.") failed:\n".mysql_errno($this->connection).":".mysql_error($this->connection));
+			$this->log_error("Query (".$query.") failed:\n".mysqli_errno($this->connection).":".mysqli_error($this->connection));
 			$this->successed = false;
 			return false;
 		}
@@ -298,16 +293,16 @@ class mysql_do_query
 	{
 		switch($method) {
 			case 10: //SQL_ARRAY
-				return mysql_fetch_row($this->result_handler);
+				return mysqli_fetch_row($this->result_handler);
 				break;
 			case 20: //SQL_ASSOC_ARRAY
-				return mysql_fetch_array($this->result_handler, MYSQL_ASSOC);
+				return mysqli_fetch_array($this->result_handler, MYSQLI_ASSOC);
 				break;
 			case 30: //SQL_BOTH
-				return mysql_fetch_array($this->result_handler, MYSQL_BOTH);
+				return mysqli_fetch_array($this->result_handler, MYSQLI_BOTH);
 				break;
 			case 40: //SQL_OBJECT
-				return mysql_fetch_object($this->result_handler);
+				return mysqli_fetch_object($this->result_handler);
 				break;
 			default:
 				$this->log_error('query-fetch: no such fetch-method: ' . $method);
@@ -319,22 +314,19 @@ class mysql_do_query
 	public function num_rows()
 	{
 		if($this->result_handler)
-			return mysql_num_rows($this->result_handler);
+			return mysqli_num_rows($this->result_handler);
 		else
 			return false;
 	}
 
 	public function num_fields()
 	{
-		if($this->result_handler)
-			return mysql_num_fields($this->result_handler);
-		else
-			return false;
+		return mysqli_field_count($this->connection);
 	}
 
 	public function affected_rows()
 	{
-		return mysql_affected_rows($this->connection);
+		return mysqli_affected_rows($this->connection);
 	}
 
 	private function log_error($string)

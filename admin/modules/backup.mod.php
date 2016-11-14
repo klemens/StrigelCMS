@@ -38,7 +38,7 @@ if(!empty($_GET['action']) && ($_GET['action'] === 'create')) {
 
     $q = $DB->query("SHOW TABLES FROM ".MYSQL_DB);
 
-    while (false !== ($cells = $q->fetch(SQL_ARRAY))) {
+    while ($cells = $q->fetch(SQL_ARRAY)) {
         $table = $cells[0];
 
         fwrite($f,"\nDROP TABLE `$table`;\n");

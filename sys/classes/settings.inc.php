@@ -66,7 +66,7 @@ class settings
             return true;
         }
 
-        while(false !== ($setting = $q->fetch())) {
+        while($setting = $q->fetch()) {
             $this->settings[trim($setting->section)][trim($setting->name)] = trim($setting->value);
         }
 

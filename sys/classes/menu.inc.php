@@ -86,7 +86,7 @@ class menu
                     ORDER BY `pid` ASC, `sort` ASC, `m_title` ASC";
 
         $q = $this->database->query($query);
-        while(false !== ($row = $q->fetch(SQL_ASSOC_ARRAY)))
+        while($row = $q->fetch(SQL_ASSOC_ARRAY))
         {
             $this->flat_menu[] = $row;
         }

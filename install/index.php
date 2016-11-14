@@ -114,11 +114,10 @@ if(isset($_GET['delete'])) {
         if($adminPassword->GetValue() === $adminPassword2->GetValue()) {
             try {
                 //Check DB-Connection
-                if(!mysql_connect($dbServer->GetValue(), $dbUser->GetValue(), $dbPassword->GetValue()))
-                    throw new Exception('Es konnte keine Datenbankverbindung hergestellt werden: '.mysql_error());
-                if(!mysql_select_db($dbDatabase->GetValue()))
-                    throw new Exception('Die Datenbank konnte nicht benutzt werden: '.mysql_error());
-                mysql_close();
+                $testConnection = mysqli_connect($dbServer->GetValue(), $dbUser->GetValue(), $dbPassword->GetValue(), $dbDatabase->GetValue());
+                if(!$testConnection)
+                    throw new Exception('Es konnte keine Datenbankverbindung hergestellt werden: '.mysqli_connect_error());
+                mysqli_close($testConnection);
 
                 $db = new mysql($dbServer->GetValue(), $dbUser->GetValue(), $dbPassword->GetValue(), $dbDatabase->GetValue());
 

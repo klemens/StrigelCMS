@@ -117,7 +117,7 @@ echo '<th>Email</th>'.LF;
 echo '<th>Aktionen</th>'.LF; //(Rechte ändern) (de/aktivieren) (löschen)
 echo '</tr>'.LF;
 
-while(false !== ($row = $q->fetch())) {
+while($row = $q->fetch()) {
     echo '<tr>'.LF;
     echo '<td>'.LF;
     echo $row->username;

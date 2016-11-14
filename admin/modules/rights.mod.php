@@ -80,7 +80,7 @@ echo '<h2>Benutzerrechte verwalten</h2>'.LF;
 
 $q = $DB->query("SELECT `right`, `value` FROM `".DB_PRE."sys_rights` WHERE `userID` = ".$id);
 $user_rights = array();
-while(false !== ($row = $q->fetch())) {
+while($row = $q->fetch()) {
     $user_rights[$row->right] = (null !== $row->value) ? $row->value : '';
 }
 $q = null;

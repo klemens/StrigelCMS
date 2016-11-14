@@ -198,7 +198,7 @@ echo '<th>Zeit</th>'.LF;
 echo '<th>Nachricht</th>'.LF;
 echo '</tr>'.LF;
 
-while(false !== ($row = $q->fetch())) {
+while($row = $q->fetch()) {
     echo '<tr>'.LF;
     echo '<td>'.LF;
     echo '<input type="checkbox" name="errors[]" value="'.$row->id.'" />'.LF;

@@ -63,7 +63,7 @@ switch($action) {
             return true;
         }
 
-        while(false !== ($row = $q->fetch())) {
+        while($row = $q->fetch()) {
             echo '<tr>';
 
             echo '<td>'.$row->aufrufe.'</td>';
@@ -103,7 +103,7 @@ switch($action) {
         echo '<table>'.LF;
         echo '<tr><th>Aufrufe</th><th>Referrer</th></tr>'.LF;
 
-        while(false !== ($row = $q->fetch())) {
+        while($row = $q->fetch()) {
             echo '<tr>';
 
             $referer = empty($row->referer) ? 'kein Referrer' : $row->referer;

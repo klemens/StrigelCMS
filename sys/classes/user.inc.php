@@ -246,7 +246,7 @@ class user
             $q = $this->DB->query(sprintf("SELECT `right`, `value` FROM %ssys_rights WHERE `userID` = %s",
                                           DB_PRE, $this->userInformation['id']));
 
-            while(false !== ($r = $q->fetch())) {
+            while($r = $q->fetch()) {
                 if(empty($r->right))
                     continue;
 
