@@ -34,7 +34,9 @@ if(!defined('SCMS')) {
 if(!empty($_GET['load'])) {
     switch($_GET['load']) {
         case 'cms':
-            $file_handle = fopen('../'.LOG_DIRECTORY.LOG_FILE, 'r+');
+            $file_path = '../'.LOG_DIRECTORY.LOG_FILE;
+            touch($file_path); // create file if it does not exist
+            $file_handle = fopen($file_path, 'r+');
             if(!$file_handle) {
                 success_message(0, 'CMS Logdatei konnte nicht geöffnet werden!');
             }
@@ -70,7 +72,9 @@ if(!empty($_GET['load'])) {
             fclose($file_handle);
             break;
         case 'php':
-            $file_handle = fopen('../'.LOG_DIRECTORY.'php.log', 'r+');
+            $file_path = '../'.LOG_DIRECTORY.'php.log';
+            touch($file_path); // create file if it does not exist
+            $file_handle = fopen($file_path, 'r+');
             if(!$file_handle) {
                 success_message(0, 'PHP Logdatei konnte nicht geöffnet werden!');
             }
