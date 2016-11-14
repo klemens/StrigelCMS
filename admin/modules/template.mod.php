@@ -59,8 +59,9 @@ while(false !== ($dir_entry = readdir($dir_handle))) {
     $licence = null;
     $licence_url = null;
 
-    if(file_exists($dir_template.$dir_entry.'/info.xml')) {
-        $xml = simplexml_load_file($dir_template.$dir_entry.'/info.xml');
+    $file_path = $dir_template.$dir_entry.'/info.xml';
+    if(file_exists($file_path)) {
+        $xml = simplexml_load_string(file_get_contents($file_path));
 
         $name = $xml->name;
         $version = $xml->version;
