@@ -1,4 +1,10 @@
 <?php header("Content-Type: text/html; charset=UTF-8");
+
+if(file_exists("../settings.php")) {
+    header('Location: ..');
+    die("");
+}
+
 ?><!DOCTYPE html>
 <html>
 <head>
@@ -99,17 +105,7 @@ $advRewrite->description = 'Die Rewrite-Funktion lenkt die Seitenaufrufe so um, 
 $dbPrefix->description = 'Dieses Präfix wird allen Tabellennamen vorangestellt, um Überschneidungen mit anderen Anwendungen zu verhindern. Meistens können Sie den voreingestellten Wert verwenden.';
 
 
-if(isset($_GET['delete'])) {
-    if(deleteDir('./')) {
-        echo '<p>Das "install"-Verzeichnis wurde erfolgreich gelöscht!
-                 Viel Spaß mit Ihrer neuen Website!</p>
-              <p><a href="..">Hier gehts zur Website</a></p>';
-    } else {
-        echo '<p>Das "install"-Verzeichnis konnte leider nicht vollständig gelöscht werden!
-                 <b>Bitte löschen Sie das Verzeichnis manuell.</b></p>
-              <p><a href="..">Hier gehts zur Website</a> (Vorher "install"-Verzeichnis löschen!)</p>';
-    }
-} else if($form->IsSent()) {
+if($form->IsSent()) {
     if($form->IsComplete()) {
         if($adminPassword->GetValue() === $adminPassword2->GetValue()) {
             try {
@@ -170,7 +166,7 @@ if(isset($_GET['delete'])) {
 
                 //Finished!
                 echo '<p>Herzlichen Glückwunsch! Die Installation wurde erfolgreich abgeschlossen.</p>';
-                echo '<p><a href="./?delete">Löschen Sie nun das Installationsverzeichnis</a>, um die Installation abzuschließen.</p>';
+                echo '<p><a href="..">Hier geht’s zur Website.</a></p>';
             } catch(Exception $e) {
                 echo '<p style="color:red;font-weight:bold;">'.$e->GetMessage().'</p>';
                 $form->ApplySent();
@@ -205,26 +201,6 @@ if(isset($_GET['delete'])) {
         $advRewrite->CheckChoices('Aktivieren');
 
     $form->Show();
-}
-
-
-
-//Delete directory and all children
-function deleteDir($folder) {
-    foreach(scandir($folder) AS $entry) {
-        if($entry == '.' || $entry == '..') continue;
-
-        if(is_dir($folder.$entry)) {
-            deleteDir($folder.$entry.'/');
-        } else {
-            unlink($folder.$entry);
-        }
-    }
-
-    if(substr($folder, 0, -1) == '.')
-        return rmdir('../install');
-    else
-        return rmdir(substr($folder, 0, -1));
 }
 
 ?>
