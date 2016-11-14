@@ -1,2 +1,4 @@
-settings.php
+/admin/backup/*
+/resources/site_files/*
+/settings.php
 /sys/log/*.log
