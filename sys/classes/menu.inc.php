@@ -43,6 +43,7 @@ class menu
     private $path = array();
 
     private $activeList;
+    private $use_full_path = false;
 
     private $output_allowed = true;
 
@@ -189,6 +190,10 @@ class menu
         $this->activeList = array_map(create_function('$a', 'return (string)$a;'), $active);
     }
 
+    public function useFullPath($active) {
+        $this->use_full_path = boolval($active);
+    }
+
     public function getPath($target = '', $separator = false, $string = '', $string_active = '', $full_path = false)
     {
         if(!$this->output_allowed) {
@@ -268,7 +273,8 @@ class menu
             if(!$target) {
                 return false;
             } else {
-                return $this->_createTreeHtmlPath($this->tree_menu, $this->getPath($target), $string);
+                $path = $this->getPath($target, false, '', '', $this->use_full_path);
+                return $this->_createTreeHtmlPath($this->tree_menu, $path, $string);
             }
         } else {
             return false;
