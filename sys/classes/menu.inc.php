@@ -307,7 +307,7 @@ class menu
 
         //Get all neighbours of current element
         foreach($data AS $data_row) {
-            if($data_row['active'] == 0)
+            if($data_row['active'] == 0 && !in_array($data_row['id'], $path))
                 continue;
 
             $href = $this->URL->makeLink($data_row['href']);
