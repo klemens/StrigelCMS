@@ -183,9 +183,9 @@ class content
 
         $tmp->setVar('pdf_path', $this->url->getServer().DIR_PDF);
 
-        $func = create_function('$result', 'global $URL; return $URL->makeLink($result[1]);');
-        $tmp->setVarCallback('href', $func);
-        $func = null;
+        $tmp->setVarCallback('href', function($link) {
+            return $this->url->makeLink($link[1]);
+        });
 
         $this->parsed_content = $tmp->getHTML();
 

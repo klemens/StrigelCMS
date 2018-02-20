@@ -187,7 +187,7 @@ class menu
     }
 
     public function setActive(array $active) {
-        $this->activeList = array_map(create_function('$a', 'return (string)$a;'), $active);
+        $this->activeList = array_map('strval', $active);
     }
 
     public function useFullPath($active) {
