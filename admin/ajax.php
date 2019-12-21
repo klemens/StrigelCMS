@@ -32,23 +32,6 @@ define('SCMS', 1);
 //Load basic settings
 require_once("../settings.php");
 //--
-//Clean up data send in get, post, cookie
-function stripslashes_deep($value) {
-    if(isset($value)) {
-        $value = is_array($value) ?
-                 array_map('stripslashes_deep', $value) :
-                 stripslashes($value);
-    }
-    return $value;
-}
-if((function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc())
-    || (ini_get('magic_quotes_sybase') && (strtolower(ini_get('magic_quotes_sybase'))!="off")) ){
-    $_GET = stripslashes_deep($_GET);
-    $_POST = stripslashes_deep($_POST);
-    $_COOKIE = stripslashes_deep($_COOKIE);
-    $_REQUEST = stripslashes_deep($_REQUEST);
-}
-//--
 
 //PHP - error settings
 error_reporting(E_ALL | E_STRICT);
