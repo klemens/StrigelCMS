@@ -304,7 +304,7 @@ class user
         $return = '';
 
         for($i=0;$i<$length;$i++) {
-            $return .= $source{mt_rand(0, strlen($source)-1)};
+            $return .= $source[mt_rand(0, strlen($source)-1)];
         }
 
         return $return;
