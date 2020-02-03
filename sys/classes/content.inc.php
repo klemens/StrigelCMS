@@ -83,7 +83,7 @@ class content
 
         $result = $this->database->qquery($query, SQL_ASSOC_ARRAY);
 
-        if(false === $result) {
+        if(!$result) {
             return false;
         }
 
@@ -98,7 +98,7 @@ class content
                                                     ORDER BY `m_pid` ASC, `m_sort` ASC, `m_title` ASC
                                                     LIMIT 1");
 
-                if(false === $redirect) {
+                if(null === $redirect) {
                     logit('content/redirect', '(first_child) - entry has no childs!');
                     die('Error occured, call admin!');
                 }
