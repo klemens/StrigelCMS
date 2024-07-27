@@ -197,6 +197,8 @@ class TemplateEvent extends Event {
 }
 
 abstract class Plugin {
+    private $pathWeb;
+
     //Set the absolute web path to the plugin dir
     public function SetWebHost($path) {
         $this->pathWeb = (string)$path;

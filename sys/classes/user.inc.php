@@ -43,6 +43,8 @@ class user
 
     private $globalSalt;
 
+    private $DB;
+
     public function __construct($DB)
     {
         if($DB) {
